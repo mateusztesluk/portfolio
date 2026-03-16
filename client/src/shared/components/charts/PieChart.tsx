@@ -14,80 +14,155 @@ interface Props extends PropsBasic {
 }
 
 class PieChart extends React.Component<Props, State> {
+  openEntry(data: DataBasic) {
+    if (data.href) {
+      window.location.assign(data.href);
+    }
+  }
+
+  getChartData() {
+    return this.props.data.filter((entry: DataBasic) => entry.value > 0);
+  }
+
   componentDidMount() {
-    const data: DataBasic[] = this.props.data;
+    const data: DataBasic[] = this.getChartData();
     const width: number = this.props.width;
-    const height: number = 4/5 * width;
+    const height: number = Math.round(width * 0.72);
     this._prepareChart(height, width, data);
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     if (this.props.data !== prevProps.data) {
-      const data: DataBasic[] = this.props.data;
+      const data: DataBasic[] = this.getChartData();
       const width: number = this.props.width;
-      const height: number = 4/5 * width;
+      const height: number = Math.round(width * 0.72);
       this._prepareChart(height, width, data);
     }
   }
 
   _prepareChart(height: number, width: number, data: DataBasic[]) {
-    const color = d3.scaleOrdinal()
+    const svg = d3.select(`.${this.props.classSvgName}`);
+    svg.selectAll('*').remove();
+    svg
+      .attr('viewBox', [0, 0, width, height] as any)
+      .attr('role', 'img')
+      .attr('aria-label', 'Most viewed blog posts chart');
+
+    if (!data.length) {
+      svg.append('text')
+        .attr('class', 'pie-chart__empty')
+        .attr('x', width / 2)
+        .attr('y', height / 2)
+        .attr('text-anchor', 'middle')
+        .text('No data yet');
+      return;
+    }
+
+    const palette = ['#2f6690', '#d07a47', '#7b9e87', '#c45858', '#d9b44a'];
+    const color = d3.scaleOrdinal<string>()
       .domain(data.map(d => d.name))
-      .range(d3.quantize(t => d3.interpolateSpectral(t * 0.8 + 0.1), data.length).reverse())
+      .range(palette);
+
+    const outerRadius = Math.min(width, height) * 0.34;
+    const innerRadius = outerRadius * 0.58;
 
     const arc = d3.arc()
-      .innerRadius(0)
-      .outerRadius(Math.min(width, height) / 2 - 1)
+      .innerRadius(innerRadius)
+      .outerRadius(outerRadius)
+      .cornerRadius(8)
+      .padAngle(0.02);
 
     const pie = d3.pie()
       .sort(null)
-      .value((d: any) => d.value)
+      .value((d: any) => d.value);
 
     const arcs = pie(data as any);
+    const chartGroup = svg.append('g')
+      .attr('transform', `translate(${width * 0.3}, ${height * 0.56})`);
 
-    const svg = d3.select(`.${this.props.classSvgName}`)
-        .attr('viewBox', [-width / 2, -height / 2, width, height] as any);
-
-    svg.append('g')
-      .attr('stroke', 'white')
+    chartGroup.append('g')
+      .attr('stroke', 'rgba(255,255,255,0.95)')
+      .attr('stroke-width', 2)
       .selectAll('path')
       .data(arcs)
       .join('path')
       .attr('fill', d => color((d.data as any).name) as any)
       .attr('d', arc as any)
+      .style('cursor', d => (d.data as any).href ? 'pointer' : 'default')
+      .style('transition', 'transform 180ms ease, filter 180ms ease')
       .on('mouseover', d => {
         this.props.setPickedData((d.data as any).name);
       })
+      .on('click', d => {
+        this.openEntry(d.data as DataBasic);
+      })
+      .on('mouseenter', function (this: SVGPathElement) {
+        d3.select(this)
+          .attr('filter', 'drop-shadow(0 12px 18px rgba(17,35,43,0.18))')
+          .attr('transform', 'scale(1.02)');
+      })
+      .on('mouseleave', function (this: SVGPathElement) {
+        d3.select(this)
+          .attr('filter', null)
+          .attr('transform', 'scale(1)');
+      })
       .append('title')
-      .text(d => (d.data as any).name);
+      .text(d => `${(d.data as any).name}: ${(d.data as any).value}`);
 
-    svg.append('g')
-      .attr('font-family', 'sans-serif')
-      .attr('font-size', 12)
+    chartGroup.append('text')
+      .attr('class', 'pie-chart__total-label')
       .attr('text-anchor', 'middle')
-    .selectAll('text')
-    .data(arcs)
-    .join('text')
-    .attr('transform', (d: any) => {
-      d.innerRadius = 0;
-      d.outerRadius = 100;
-      let pos = arc.centroid(d);
-      return 'translate(' + pos + ')';
-  })
-      .call(text => text.append('tspan')
-          .attr('y', '-0.4rem')
-          .attr('font-weight', 'bold')
-          .text((d: any) => `${d.data.name.slice(0, 7)}...`))
-      .call(text => text.filter(d => (d.endAngle - d.startAngle) > 0.25).append("tspan")
-          .attr('x', 0)
-          .attr('y', '0.7rem')
-          .attr('fill-opacity', 0.7)
-          .text((d: any) => d.data.value.toLocaleString()));
+      .attr('font-size', 22)
+      .attr('y', -10)
+      .text('Views');
+
+    chartGroup.append('text')
+      .attr('class', 'pie-chart__total-value')
+      .attr('text-anchor', 'middle')
+      .attr('font-size', 62)
+      .attr('y', 28)
+      .text(d3.sum(data, (entry: DataBasic) => entry.value).toLocaleString());
+
+    const legend = svg.append('g')
+      .attr('transform', `translate(${width * 0.70}, ${height * 0.29})`);
+
+    const legendItems = legend.selectAll('g')
+      .data(data)
+      .join('g')
+      .attr('transform', (_d, index) => `translate(0, ${index * 62})`)
+      .style('cursor', d => d.href ? 'pointer' : 'default')
+      .on('click', d => {
+        this.openEntry(d as DataBasic);
+      });
+
+    legendItems.append('circle')
+      .attr('r', 9)
+      .attr('cx', 0)
+      .attr('cy', 0)
+      .attr('fill', d => color(d.name) as string);
+
+    legendItems.append('text')
+      .attr('class', 'pie-chart__legend-name')
+      .attr('x', 24)
+      .attr('font-size', 24)
+      .attr('y', -4)
+      .text((d: DataBasic) => this.truncateLabel(d.name));
+
+    legendItems.append('text')
+      .attr('class', 'pie-chart__legend-value')
+      .attr('x', 24)
+      .attr('font-size', 20)
+      .attr('y', 20)
+      .text((d: DataBasic) => `${d.value.toLocaleString()} views`);
+  }
+
+  truncateLabel(name: string) {
+    return name.length > 16 ? `${name.slice(0, 16)}...` : name;
   }
 
   render() {
     return (
-      <svg className={this.props.classSvgName}></svg>
+      <svg className={`${this.props.classSvgName} pie-chart`}></svg>
     )
   }
 }

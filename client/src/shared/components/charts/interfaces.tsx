@@ -1,6 +1,7 @@
 export interface DataBasic {
     name: string;
     value: number;
+    href?: string;
 }
 
 export interface PropsBasic {

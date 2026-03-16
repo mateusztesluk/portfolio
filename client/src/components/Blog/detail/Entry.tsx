@@ -85,6 +85,25 @@ class Entry extends React.Component<Props, State> {
     this.props.history.push(`/blog/edit/${id}`);
   }
 
+  formatDate(value?: string) {
+    if (!value) {
+      return '';
+    }
+
+    const parsedDate = new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) {
+      return value;
+    }
+
+    return new Intl.DateTimeFormat('pl-PL', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(parsedDate);
+  }
+
   renderActions() {
     const currentUserId = this.props.user?.id;
     const authorId = this.state.authors.main?.id;
@@ -143,8 +162,8 @@ class Entry extends React.Component<Props, State> {
             </div>
           </div>
           <div className="blog-detail__right">
-            <div className="blog-detail__add-date">Created: {this.state.blog.add_date}</div>
-            <div className="blog-detail__update-date">Last modified: {this.state.blog.update_date}</div>
+            <div className="blog-detail__add-date">Created: {this.formatDate(this.state.blog.add_date)}</div>
+            <div className="blog-detail__update-date">Last modified: {this.formatDate(this.state.blog.update_date)}</div>
             <div className="blog-detail__seen">Views: {this.state.blog.views}</div>
             {this.renderActions()}
           </div>

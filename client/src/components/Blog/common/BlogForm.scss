@@ -36,6 +36,10 @@
         padding: 0;
     }
 
+    &__tool-action .widget-button {
+        min-width: 17rem;
+    }
+
     &__control {
         width: 100%;
     }

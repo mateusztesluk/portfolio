@@ -85,21 +85,17 @@ class Dashboard extends React.Component<Props, ComponentState> {
     return (
       <div className="blog-dashboard">
         <Card className="blog-dashboard__card blog-dashboard__authors-count">
-        <header className="blog-dashboard__header">Views snapshot</header>
+          <header className="blog-dashboard__header">Views snapshot</header>
           <PieChart
-            data={this.state.mostSeenBlogs.map((elem: Blog) => ({name: elem.title, value: elem.views})).slice(0, 3)}
+            data={this.state.mostSeenBlogs.map((elem: Blog) => ({
+              name: elem.title,
+              value: elem.views,
+              href: getConfigRoutesBlog('detail')(elem.id)
+            })).slice(0, 5)}
             classSvgName="charts-main__svg-pie"
             setPickedData={(name: string) => {}}
-            width={200}
+            width={560}
           />
-        </Card>
-
-        <Card className="blog-dashboard__card blog-dashboard__a">
-          <div className="blog-dashboard__feature">
-            <div className="blog-dashboard__eyebrow">Editorial note</div>
-            <div className="blog-dashboard__feature-title">Stories from the road</div>
-            <div className="blog-dashboard__feature-copy">Publish travel journals, keep photo memories and surface the most read destinations in one place.</div>
-          </div>
         </Card>
 
         <Card className="blog-dashboard__card blog-dashboard__b">

@@ -1,4 +1,5 @@
 import React from 'react';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import './select.scss';
 
@@ -54,7 +55,6 @@ class SelectWidget extends React.Component<Props, State> {
 
   handleSelectChange(event: any) {
     const value: number | string = Number(event.target.value) || event.target.value;
-    console.log(value)
     if (this.props.onChange) this.props.onChange(value);
     this.setState({
       selected: value,
@@ -64,17 +64,20 @@ class SelectWidget extends React.Component<Props, State> {
   render() {
     return (
       <div className="widget-select">
-        <select
-          className="widget-select__select"
-          value={this.props.changeValue ? this.state.selected : -1}
-          onChange={(e) => this.handleSelectChange(e)}
-        >
-          <option
-            value={-1}
-            disabled>{this.props.placeholder || "Pick"}
-          </option>
-          {this.state.data.map((entity: SelectedEntity, index: number) => <option key={entity.id || index} value={entity.id || entity.name}>{entity.name}</option>)}
-        </select>
+        <div className="widget-select__control">
+          <select
+            className="widget-select__select"
+            value={this.props.changeValue ? this.state.selected : -1}
+            onChange={(e) => this.handleSelectChange(e)}
+          >
+            <option
+              value={-1}
+              disabled>{this.props.placeholder || "Pick"}
+            </option>
+            {this.state.data.map((entity: SelectedEntity, index: number) => <option key={entity.id || index} value={entity.id || entity.name}>{entity.name}</option>)}
+          </select>
+          <ExpandMoreIcon className="widget-select__icon" />
+        </div>
       </div>
     )
   }

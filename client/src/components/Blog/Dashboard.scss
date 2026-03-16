@@ -12,23 +12,22 @@
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     grid-template-areas:
-        "chart-1 feature-1 blogs-1 blogs-1"
+        "chart-1 chart-1 cta cta"
         "feature-2 feature-3 blogs-2 blogs-3"
-        "blogs-4 blogs-4 cta cta";
+        "blogs-4 blogs-4 blogs-1 blogs-1";
     gap: 2.4rem;
 
     @media screen and (max-width: 1200px) {
         grid-template-columns: 1fr;
         grid-template-areas:
             "chart-1"
-            "feature-1"
             "feature-2"
             "feature-3"
-            "blogs-1"
+            "cta"
             "blogs-2"
             "blogs-3"
             "blogs-4"
-            "cta";
+            "blogs-1";
     }
 
     &__card {
@@ -54,10 +53,7 @@
 
     &__authors-count {
         grid-area: chart-1;
-    }
-
-    &__a {
-        grid-area: feature-1;
+        min-height: 46rem;
     }
 
     &__most-seen-blogs {
@@ -100,7 +96,13 @@
         margin-top: auto;
         padding-top: 2rem;
         display: flex;
-        flex-direction: row-reverse;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    &__actions .widget-button,
+    &__feature-action .widget-button {
+        min-width: 16rem;
     }
 
     &__eyebrow {
@@ -134,6 +136,8 @@
     &__feature-action {
         margin-top: auto;
         padding-top: 1rem;
+        display: flex;
+        justify-content: flex-start;
     }
 
     &__stat {

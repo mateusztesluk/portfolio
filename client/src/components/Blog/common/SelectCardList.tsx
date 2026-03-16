@@ -129,7 +129,7 @@ class SelectCardList extends React.Component<Props, State> {
   renderBlogsCard(keyId: number, subject: Subject, blogs: Blog[]) {
     return (
       <Card className="blog-cards__card" key={keyId}>
-        <CardContent>
+        <CardContent className="blog-cards__card-content">
           <header className="blog-cards__blogs-header">{subject.name || subject.id}</header>
           {blogs.map(blog => {
             return (
@@ -140,7 +140,7 @@ class SelectCardList extends React.Component<Props, State> {
             )
           })}
         </CardContent>
-        <CardActions>
+        <CardActions className="blog-cards__card-actions">
           <ButtonWidget onClick={() => this.handleRemoveSubjectBlogs(keyId)} text={'Unpin'}/>
         </CardActions>
       </Card>
@@ -150,7 +150,7 @@ class SelectCardList extends React.Component<Props, State> {
   renderMainCard() {
     return (
       <Card className="blog-cards__card--header">
-        <CardContent>
+        <CardContent className="blog-cards__card-content blog-cards__card-content--header">
           {this.state.loading && <LinearProgress />}
           <SelectWidget data={this.state.subjects} onChange={(id: string | number) => this.handleSubjectSelectChange(id as number)}/>
         </CardContent>

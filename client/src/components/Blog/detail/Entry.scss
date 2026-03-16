@@ -85,12 +85,16 @@
         margin-top: 2rem;
         display: flex;
         flex-wrap: wrap;
-        justify-content: flex-end;
+        justify-content: flex-start;
         gap: 1rem;
 
         @media screen and (max-width: 900px) {
             justify-content: flex-start;
         }
+    }
+
+    &__actions .widget-button {
+        min-width: 14rem;
     }
 
     &__image {
