@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import Card from '@mui/material/Card';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import './Dashboard.scss';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { Card } from '@material-ui/core';
 
 import { getConfigUrlSrvBlog, getConfigRoutesBlog } from 'config';
 import { Blog } from 'shared/interfaces/blog';
@@ -85,7 +85,7 @@ class Dashboard extends React.Component<Props, ComponentState> {
     return (
       <div className="blog-dashboard">
         <Card className="blog-dashboard__card blog-dashboard__authors-count">
-        <header className="blog-dashboard__header">View's amount</header>
+        <header className="blog-dashboard__header">Views snapshot</header>
           <PieChart
             data={this.state.mostSeenBlogs.map((elem: Blog) => ({name: elem.title, value: elem.views})).slice(0, 3)}
             classSvgName="charts-main__svg-pie"
@@ -95,15 +95,27 @@ class Dashboard extends React.Component<Props, ComponentState> {
         </Card>
 
         <Card className="blog-dashboard__card blog-dashboard__a">
-          <div className="blog-dashboard__soon">Show up soon</div>
+          <div className="blog-dashboard__feature">
+            <div className="blog-dashboard__eyebrow">Editorial note</div>
+            <div className="blog-dashboard__feature-title">Stories from the road</div>
+            <div className="blog-dashboard__feature-copy">Publish travel journals, keep photo memories and surface the most read destinations in one place.</div>
+          </div>
         </Card>
 
         <Card className="blog-dashboard__card blog-dashboard__b">
-          <div className="blog-dashboard__soon">Show up soon</div>
+          <div className="blog-dashboard__stat">
+            <div className="blog-dashboard__eyebrow">Authors</div>
+            <div className="blog-dashboard__stat-value">{this.state.topSeenAuthors.length}</div>
+            <div className="blog-dashboard__stat-copy">active voices highlighted in the dashboard</div>
+          </div>
         </Card>
 
         <Card className="blog-dashboard__card blog-dashboard__c">
-          <div className="blog-dashboard__soon">Show up soon</div>
+          <div className="blog-dashboard__stat">
+            <div className="blog-dashboard__eyebrow">Regions</div>
+            <div className="blog-dashboard__stat-value">{this.state.mostSeenCountries.length}</div>
+            <div className="blog-dashboard__stat-copy">popular places readers explore right now</div>
+          </div>
         </Card>
 
         <Card className="blog-dashboard__card blog-dashboard__most-seen-blogs">
@@ -147,11 +159,11 @@ class Dashboard extends React.Component<Props, ComponentState> {
               )
             })}
             <footer className="blog-dashboard__actions">
-              <Link to={{
-                pathname: getConfigRoutesBlog('authors'),
-                state: {
+              <Link
+                to={getConfigRoutesBlog('authors')}
+                state={{
                   authors: this.state.topSeenAuthors
-                }}}
+                }}
               >
                 <ButtonWidget text="Visit" />
               </Link>
@@ -169,15 +181,28 @@ class Dashboard extends React.Component<Props, ComponentState> {
               )
             })}
             <footer className="blog-dashboard__actions">
-              <Link to={{
-                  pathname: getConfigRoutesBlog('sites'),
-                  state: {
+              <Link
+                  to={getConfigRoutesBlog('sites')}
+                  state={{
                     countries: this.state.mostSeenCountries
-                  }}}
+                  }}
                 >
                   <ButtonWidget text="Visit" />
                 </Link>
             </footer>
+          </div>
+        </Card>
+
+        <Card className="blog-dashboard__card blog-dashboard__cta">
+          <div className="blog-dashboard__feature">
+            <div className="blog-dashboard__eyebrow">Start writing</div>
+            <div className="blog-dashboard__feature-title">Share your next journey</div>
+            <div className="blog-dashboard__feature-copy">Turn a route, a photo and a few notes into a polished travel story.</div>
+            <div className="blog-dashboard__feature-action">
+              <Link to={getConfigRoutesBlog('addNew')}>
+                <ButtonWidget text="Create story" />
+              </Link>
+            </div>
           </div>
         </Card>
       </div>

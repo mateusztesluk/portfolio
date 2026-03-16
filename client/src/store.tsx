@@ -12,5 +12,5 @@ export default createStore(
       isOpenLoginDialog,
       user,
       token,
-  }), {}, applyMiddleware(createLogger())
+  }), {}, applyMiddleware(createLogger() as any)
 );

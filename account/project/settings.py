@@ -14,6 +14,12 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
+def normalize_pem_env(value):
+    if not value:
+        return value
+    return value.replace('\\n', '\n')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -39,7 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'account',
     'corsheaders',
-    'drf_yasg',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -53,8 +59,8 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = os.environ.get('ACCOUNT_ALLOWED_ORIGINS', '').split(' ') or []
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [origin for origin in os.environ.get('ACCOUNT_ALLOWED_ORIGINS', '').split(' ') if origin]
 
 ROOT_URLCONF = 'project.urls'
 
@@ -91,9 +97,10 @@ DATABASES = {
     }
 }
 
-PRIV_KEY = os.environ.get('PRIVATE_AUTH_KEY', None)
-PUB_KEY = os.environ.get('PUBLIC_AUTH_KEY', None)
+PRIV_KEY = normalize_pem_env(os.environ.get('PRIVATE_AUTH_KEY', None))
+PUB_KEY = normalize_pem_env(os.environ.get('PUBLIC_AUTH_KEY', None))
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
@@ -110,6 +117,13 @@ REST_FRAMEWORK = {
     'ALGORITHM': 'RS256',
     'SIGNING_KEY': PRIV_KEY,
     'VERIFYING_KEY': PUB_KEY,
+}
+
+SIMPLE_JWT = {
+    'ALGORITHM': 'RS256',
+    'SIGNING_KEY': PRIV_KEY,
+    'VERIFYING_KEY': PUB_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 
@@ -150,3 +164,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

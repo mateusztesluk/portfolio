@@ -28,7 +28,7 @@ def upgrade():
     sa.Column('views', sa.Integer(), nullable=True),
     sa.Column('country', sa.Text(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
-    sa.Column('add_date', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('add_date', sa.DateTime(timezone=True), server_default=sa.text('CURRENT_TIMESTAMP'), nullable=True),
     sa.Column('update_date', sa.DateTime(timezone=True), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )

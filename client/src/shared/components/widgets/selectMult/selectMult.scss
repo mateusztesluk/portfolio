@@ -1,18 +1,42 @@
 .widget-select-multiple {
+  display: grid;
+  gap: 1.2rem;
+
+  &__selected-elements {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
   &__selected-element {
-    padding: .5rem;
-    background-color: #ffa31a;
-    border-radius: 10%;
-    margin: 1rem 1rem 0 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.8rem 1.2rem;
+    background: var(--color-accent-soft);
+    color: var(--color-accent-strong);
+    border: 1px solid rgba(200, 109, 59, 0.18);
+    border-radius: 999px;
+    font-size: 1.4rem;
+    font-weight: 700;
   }
 
   &__selected-element-rm {
-    margin-left: .5rem;
-    padding: 0 .1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
     border: 1px solid transparent;
+    border-radius: 50%;
+    transition:
+      background var(--transition-base),
+      border-color var(--transition-base);
 
     &:hover {
-      border: 1px solid grey;
+      cursor: pointer;
+      border-color: rgba(200, 109, 59, 0.28);
+      background: rgba(255, 255, 255, 0.7);
     }
   }
 }

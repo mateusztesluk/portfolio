@@ -2,14 +2,20 @@
 @import '../../styles/common.scss';
 
 .dashboard {
-  width:100vw;
-  height:100vh;
-  display:grid;
+  width: 100vw;
+  min-height: 100vh;
+  display: grid;
   grid-template-columns: 1fr 1fr;
+  background: linear-gradient(180deg, #f7f1e7 0%, #efe3d1 100%);
+
+  @media screen and (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
 
   .part {
-    background-color:#333;
     position: relative;
+    min-height: 50vh;
+    overflow: hidden;
 
     &__bg-video {
       position: absolute;
@@ -36,36 +42,39 @@
     }
 
     &--1 {
-      @include background-img-gradient(#3b98e4, #fff, "../assets/blog-dashboard.png");
+      @include background-img-gradient(rgba(19, 41, 51, 0.62), rgba(200, 109, 59, 0.18), "../assets/blog-dashboard.png");
     }
 
     &--2 {
-      @include background-img-gradient(#ddb810, #fff, "../assets/travel-dashboard.jpg");
+      @include background-img-gradient(rgba(19, 41, 51, 0.58), rgba(122, 82, 36, 0.18), "../assets/travel-dashboard.jpg");
     }
 
     &--3 {
-      @include background-img-gradient(#3ab461, #fff, "../assets/wcwm.png");
+      @include background-img-gradient(rgba(19, 41, 51, 0.62), rgba(63, 111, 88, 0.16), "../assets/wcwm.png");
     }
 
     &--4 {
-      @include background-img-gradient(#ad3232, #fff, "../assets/covid.png");
+      @include background-img-gradient(rgba(19, 41, 51, 0.62), rgba(173, 50, 50, 0.18), "../assets/covid.png");
     }
 
     &__link {
-      color: #000;
+      color: #fff;
     }
 
     &__name {
-      font-size: 3rem;
+      font-size: 3.6rem;
+      font-family: Georgia, 'Times New Roman', serif;
+      letter-spacing: 0.04em;
+      color: #fff;
       text-transform: uppercase;
       position: absolute;
 
       @media screen and (max-width: 1000px) {
-        font-size: 2rem;
+        font-size: 2.6rem;
       }
 
       @media screen and (max-width: 600px) {
-        font-size: 1.5rem;
+        font-size: 2rem;
       }
 
       &--1 {
@@ -96,17 +105,18 @@
     &__quarter {
       transition: all .3s;
       position: absolute;
-      width: 17rem;
-      height: 17rem;
+      width: 19rem;
+      height: 19rem;
+      backdrop-filter: blur(0.4rem);
 
       @media screen and (max-width: 1000px) {
-        width: 10rem;
-        height: 10rem;
+        width: 14rem;
+        height: 14rem;
       }
 
       @media screen and (max-width: 600px) {
-        width: 8rem;
-        height: 8rem;
+        width: 10rem;
+        height: 10rem;
       }
 
       &:hover {
@@ -116,11 +126,9 @@
       &--1 {
           bottom: 0;
           right: 0;
-          background: linear-gradient(135deg, rgb(243, 218, 172), rgb(235, 195, 21));
+          background: linear-gradient(135deg, rgba(255, 252, 247, 0.88), rgba(200, 109, 59, 0.84));
           border-radius: 17rem 0 0 0;
-          -webkit-box-shadow: -10px -10px 19px -6px rgba(0,0,0,.75);
-          -moz-box-shadow: -10px -10px 19px -6px rgba(0,0,0,.75);
-          box-shadow: -10px -10px 19px -6px rgba(0,0,0,.75);
+          box-shadow: -1rem -1rem 3rem rgba(17, 35, 43, 0.24);
 
           @media screen and (max-width: 1000px) {
             border-radius: 10rem 0 0 0;
@@ -138,11 +146,9 @@
       &--2 {
           bottom: 0;
           left: 0;
-          background: linear-gradient(225deg, rgb(243, 218, 172), rgb(235, 195, 21));
+          background: linear-gradient(225deg, rgba(255, 252, 247, 0.88), rgba(200, 109, 59, 0.84));
           border-radius: 0 17rem 0 0;
-          -webkit-box-shadow: 10px -10px 19px -6px rgba(0,0,0,.75);
-          -moz-box-shadow: 10px -10px 19px -6px rgba(0,0,0,.75);
-          box-shadow: 10px -10px 19px -6px rgba(0,0,0,.75);
+          box-shadow: 1rem -1rem 3rem rgba(17, 35, 43, 0.24);
 
           @media screen and (max-width: 1000px) {
             border-radius: 0 10rem 0 0;
@@ -160,11 +166,9 @@
       &--3 {
           top: 0;
           right: 0;
-          background: linear-gradient(45deg, rgb(243, 218, 172), rgb(235, 195, 21));
+          background: linear-gradient(45deg, rgba(255, 252, 247, 0.88), rgba(200, 109, 59, 0.84));
           border-radius: 0 0 0 17rem;
-          -webkit-box-shadow: -10px 10px 19px -6px rgba(0,0,0,.75);
-          -moz-box-shadow: -10px 10px 19px -6px rgba(0,0,0,.75);
-          box-shadow: -10px 10px 19px -6px rgba(0,0,0,.75);
+          box-shadow: -1rem 1rem 3rem rgba(17, 35, 43, 0.24);
 
           @media screen and (max-width: 1000px) {
             border-radius: 0 0 0 10rem;
@@ -182,11 +186,9 @@
       &--4 {
         top: 0;
         left: 0;
-        background: linear-gradient(320deg, rgb(243, 218, 172), rgb(235, 195, 21));
+        background: linear-gradient(320deg, rgba(255, 252, 247, 0.88), rgba(200, 109, 59, 0.84));
         border-radius: 0 0 17rem 0;
-        -webkit-box-shadow: 10px 10px 19px -6px rgba(0,0,0,.75);
-        -moz-box-shadow: 10px 10px 19px -6px rgba(0,0,0,.75);
-        box-shadow: 10px 10px 19px -6px rgba(0,0,0,.75);
+        box-shadow: 1rem 1rem 3rem rgba(17, 35, 43, 0.24);
 
         @media screen and (max-width: 1000px) {
           border-radius: 0 0 10rem 0;

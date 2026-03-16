@@ -39,11 +39,6 @@ class PieChart extends React.Component<Props, State> {
       .innerRadius(0)
       .outerRadius(Math.min(width, height) / 2 - 1)
 
-    const radius = Math.min(width, height) / 2 * 0.8;
-    const arcLabel = {
-      centroid: d3.arc().innerRadius(radius).outerRadius(radius)
-      }
-
     const pie = d3.pie()
       .sort(null)
       .value((d: any) => d.value)

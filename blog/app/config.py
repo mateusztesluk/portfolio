@@ -1,6 +1,12 @@
 import os
 
 
+def normalize_pem_env(value):
+    if not value:
+        return value
+    return value.replace('\\n', '\n')
+
+
 class Config(object):
     DEBUG = False
     TESTING = False
@@ -9,7 +15,7 @@ class Config(object):
     RATELIMIT_DEFAULT = '200 per day;10 per second'
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024     # 16 megabytes
     CORS_ORIGINS = os.environ.get('BLOG_ALLOWED_ORIGINS', '').split(' ')
-    PUBLIC_AUTH_KEY = os.environ.get('PUBLIC_AUTH_KEY', '')
+    PUBLIC_AUTH_KEY = normalize_pem_env(os.environ.get('PUBLIC_AUTH_KEY', ''))
 
 
 class ProductionConfig(Config):

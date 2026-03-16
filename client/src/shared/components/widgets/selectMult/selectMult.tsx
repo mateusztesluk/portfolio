@@ -14,16 +14,22 @@ interface Props {
   initialValue?: string[] | number[];
 }
 
-const SelectMultipleWidget = (props: Props) => {
+const SelectMultipleWidget = ({ onChange, data, endpoint, placeholder, initialValue }: Props) => {
   const [selected, setSelected] = useState<(number | string)[]>([])
 
   useEffect(() => {
-    if (props.onChange) props.onChange(selected);
+    if (onChange) onChange(selected);
   }, [selected]);
 
   useEffect(() => {
-    if (props.initialValue && props.initialValue.length !== selected.length) setSelected(props.initialValue);
-  }, [props.initialValue]);
+    if (
+      initialValue &&
+      (initialValue.length !== selected.length ||
+        initialValue.some((value, index) => value !== selected[index]))
+    ) {
+      setSelected(initialValue);
+    }
+  }, [initialValue, selected]);
 
 
   const handleAdd = (value: number | string) => {
@@ -51,9 +57,9 @@ const SelectMultipleWidget = (props: Props) => {
   return (
     <div className="widget-select-multiple">
       <SelectWidget
-        placeholder={props.placeholder}
-        data={props.data}
-        endpoint={props.endpoint}
+        placeholder={placeholder}
+        data={data}
+        endpoint={endpoint}
         onChange={(value: number | string) => handleAdd(value)}
       />
       {renderElements()}

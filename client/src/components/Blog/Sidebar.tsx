@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import './Sidebar.scss';
-import HomeIcon from '@material-ui/icons/Menu';
-import FlightTakeoffIcon from '@material-ui/icons/FlightTakeoff';
-import FlightLandIcon from '@material-ui/icons/FlightLand';
+import MenuIcon from '@mui/icons-material/Menu';
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
+import FlightLandIcon from '@mui/icons-material/FlightLand';
 
 import { getConfigBlog, getConfigRoutesBlog } from 'config';
 import { setOpenLoginDialog } from 'actions/login-dialog';
@@ -88,27 +88,18 @@ class BlogSidebarComponent extends React.Component <Props, ComponentState>  {
       <div className={`blog__sidebar ${this.state.showSidebar ? 'blog__sidebar--show' : 'blog__sidebar--hide'}`} ref={this._ref}>
         <div className="blog__top">
           <Link to="/" className="blog__logo" onMouseEnter={() => this.setState({logoChanged: true})} onMouseLeave={() => this.setState({logoChanged: false})}>
+            <div className="blog__eyebrow">Travel editorial</div>
             <div className="blog__header">
-              <div><IconLogo fontSize="inherit" className="blog__travel-icon" /></div>
-              <div>B</div>
-              <div>l</div>
-              <div>o</div>
-              <div>g</div>
+              <IconLogo fontSize="inherit" className="blog__travel-icon" />
+              <span>Blog</span>
             </div>
-            <div className="blog__subheader">
-              <div>T</div>
-              <div>r</div>
-              <div>a</div>
-              <div>v</div>
-              <div>e</div>
-              <div>l</div>
-            </div>
+            <div className="blog__subheader">Stories, places and visual notes from the road.</div>
           </Link>
           <div className="blog__navs">
-            <Link to={getConfigRoutesBlog('dashboard')} onClick={() => this.handleToggleSidebarIfSmallScreen()} className="">Dashboard</Link>
-            <Link to={getConfigRoutesBlog('authors')} onClick={() => this.handleToggleSidebarIfSmallScreen()} className="">Authors</Link>
-            <Link to={getConfigRoutesBlog('sites')} onClick={() => this.handleToggleSidebarIfSmallScreen()} className="">Sites</Link>
-            <Link to={getConfigRoutesBlog('addNew')} onClick={() => this.handleToggleSidebarIfSmallScreen()} className="">Add blog</Link>
+            <Link to={getConfigRoutesBlog('dashboard')} onClick={() => this.handleToggleSidebarIfSmallScreen()} className="blog__nav-link">Dashboard</Link>
+            <Link to={getConfigRoutesBlog('authors')} onClick={() => this.handleToggleSidebarIfSmallScreen()} className="blog__nav-link">Authors</Link>
+            <Link to={getConfigRoutesBlog('sites')} onClick={() => this.handleToggleSidebarIfSmallScreen()} className="blog__nav-link">Sites</Link>
+            <Link to={getConfigRoutesBlog('addNew')} onClick={() => this.handleToggleSidebarIfSmallScreen()} className="blog__nav-link">Add blog</Link>
           </div>
         </div>
         <div className="blog__bottom">
@@ -124,7 +115,7 @@ class BlogSidebarComponent extends React.Component <Props, ComponentState>  {
   renderNavbar() {
     return (
       <div className="blog__navbar">
-        <HomeIcon className="blog__navbar-icon" fontSize="large" onClick={() => this.toggleSidebar()}/>
+        <MenuIcon className="blog__navbar-icon" fontSize="large" onClick={() => this.toggleSidebar()}/>
       </div>
     )
   }

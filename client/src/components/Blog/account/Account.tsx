@@ -1,20 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 
 import './Account.scss';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails } from '@material-ui/core';
 
-import { Blog } from 'shared/interfaces/blog';
 import { User } from 'shared/interfaces/user';
 import ChangePassword from './changePassword/ChangePassword';
 import EditProfile from './editProfile/EditProfile';
 import Admin from './admin/Admin';
 
-
-interface ComponentState {
-  mostSeenBlogs: Blog[];
-}
 
 interface ReduxState {
   user: User;
@@ -30,7 +27,7 @@ enum PanelCondition {
 }
 
 interface PanelConfig {
-  [name: string]: {component: React.ComponentClass | JSX.Element; condition?: PanelCondition}
+  [name: string]: {component: JSX.Element; condition?: PanelCondition}
 }
 
 const panels: PanelConfig = {
@@ -60,18 +57,18 @@ const AccountComponent = (props: Props) => {
   return (
     <div className="blog-account">
       {Object.keys(panels).map((key: string, index: number) => {
-        return manageCondition(panels[key].condition) ? <ExpansionPanel>
-                <ExpansionPanelSummary
+        return manageCondition(panels[key].condition) ? <Accordion key={key}>
+                <AccordionSummary
                   key={index}
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel-content"
                 >
                   {key}
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                </AccordionSummary>
+                <AccordionDetails>
                   {panels[key].component}
-                </ExpansionPanelDetails>
-              </ExpansionPanel> : <></>
+                </AccordionDetails>
+              </Accordion> : <></>
       })}
     </div>
   );

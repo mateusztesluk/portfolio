@@ -8,21 +8,21 @@
     z-index: 1000;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(34, 33, 33, 0.877);
-    font-size: 2rem;
+    background: rgba(17, 35, 43, 0.52);
+    backdrop-filter: blur(0.8rem);
+    font-size: 1.8rem;
 
     &__box {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-color: rgb(255, 255, 255);
-        -webkit-box-shadow: 2px 10px 17px -4px rgba(0,0,0,0.75);
-        -moz-box-shadow: 2px 10px 17px -4px rgba(0,0,0,0.75);
-        box-shadow: 2px 10px 17px -4px rgba(0,0,0,0.75);
-        border-radius: 0.7rem;
-        border: rgb(172, 169, 165) 1px solid;
-        padding: 2rem;
+        width: min(92vw, 58rem);
+        background: linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(247, 239, 229, 0.98));
+        box-shadow: var(--shadow-medium);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border);
+        padding: 2.8rem;
         animation-name: fadeIn;
         animation-duration: 0.8s;
         -webkit-animation-name: fadeIn;
@@ -31,11 +31,15 @@
 
     &__exit-icon {
         position: absolute;
-        top: 1rem;
-        right: 1rem;
+        top: 1.8rem;
+        right: 1.8rem;
+        color: var(--color-text-muted);
+        transition: color var(--transition-base), transform var(--transition-base);
 
         &:hover {
             cursor: pointer;
+            color: var(--color-heading);
+            transform: rotate(90deg);
         }
     }
 
@@ -44,8 +48,11 @@
     }
 
     &__title {
-        border-bottom: black 0.5px solid;
-        font-size: 4rem;
+        padding-right: 4rem;
         margin-bottom: 2rem;
+        color: var(--color-heading);
+        font-size: 3.4rem;
+        font-family: Georgia, 'Times New Roman', serif;
+        line-height: 1.05;
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CloseOutlined } from '@material-ui/icons';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
 import './Dialog.scss';
 
@@ -22,7 +22,7 @@ export const Dialog = (props: Props) => {
   return (
     <div className={`dialog ${props.open ? 'dialog--show' : ''}`} onClick={(e) => onBackgroundClick(e)}>
       <div className="dialog__box">
-        <CloseOutlined className="dialog__exit-icon" fontSize="large" onClick={props.onClose} />
+        <CloseOutlinedIcon className="dialog__exit-icon" fontSize="large" onClick={props.onClose} />
         <h3 className="dialog__title">{props.title}</h3>
         {props.children}
       </div>

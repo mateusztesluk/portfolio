@@ -45,7 +45,7 @@ class BlogViewSet(views.MethodView):
     @is_auth
     def post(self, user_id, *args, **kwargs):
         try:
-            data = request.get_json() or request.form.to_dict()
+            data = request.get_json(silent=True) or request.form.to_dict()
             images = request.files.getlist('file')
             data['user_id'] = user_id
             service = BlogService()
@@ -56,6 +56,9 @@ class BlogViewSet(views.MethodView):
             return jsonify(blog), 201
         except (TypeError, OperationalError, IntegrityError) as err:
             raise BadRequest(err.args)
+        except Exception as err:
+            current_app.logger.exception('Failed to create blog post')
+            raise
 
     @is_auth
     @is_allowed
@@ -68,7 +71,7 @@ class BlogViewSet(views.MethodView):
     @is_auth
     @is_allowed
     def put(self, id, *args, **kwargs):
-        data = request.get_json() or request.form.to_dict()
+        data = request.get_json(silent=True) or request.form.to_dict()
         images = request.files.getlist('file')
         service = BlogService()
         blog = service.update_blog(id, data)

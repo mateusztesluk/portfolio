@@ -8,14 +8,16 @@ errors = Blueprint('errors', __name__)
 
 @errors.app_errorhandler(Exception)
 def handle_exception_format(error):
+    current_app.logger.exception('Unhandled application error')
     payload = {}
-    payload['message'] = error.args
+    payload['message'] = str(error) or error.__class__.__name__
+    payload['type'] = error.__class__.__name__
     return jsonify(payload), 500
 
 @errors.app_errorhandler(BadRequest)
 def handle_bad_request_format(error):
     payload = {}
-    payload['message'] = error.args
+    payload['message'] = str(error) or error.args
     payload['type'] = error.__class__.__name__
     return jsonify(payload), error.status_code
 

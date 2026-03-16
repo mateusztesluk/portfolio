@@ -1,39 +1,43 @@
-const proxy = require('http-proxy-middleware');
-// var HttpsProxyAgent = require('https-proxy-agent');
-// var proxyServer = process.env.HTTPS_PROXY || process.env.HTTP_PROXY || process.env.http_proxy;
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 
 module.exports = function (app) {
     app.use(
-        proxy('/account',{
-            target: 'http://127.0.0.1:8000',
+        createProxyMiddleware({
+            pathFilter: '/account/**',
+            target: 'http://127.0.0.1:8001',
             secure: false,
             changeOrigin: true,
-            log: true,
+            logLevel: 'debug',
             pathRewrite: {
                 '^/account': '/api/v1',
             },
-            // agent: new HttpsProxyAgent(proxyServer)
-        }),
-        proxy('/blogs',{
-            target: 'http://127.0.0.1:5000',
+        })
+    );
+
+    app.use(
+        createProxyMiddleware({
+            pathFilter: '/blogs/**',
+            target: 'http://127.0.0.1:8000',
             secure: false,
             changeOrigin: true,
-            log: true,
+            logLevel: 'debug',
             pathRewrite: {
                 '^/blogs': '/api/v1/blogs',
             },
-            // agent: new HttpsProxyAgent(proxyServer)
-        }),
-        proxy('/countries',{
-            target: 'https://restcountries.eu/rest/v2/all?fields=name',
+        })
+    );
+
+    app.use(
+        createProxyMiddleware({
+            pathFilter: '/countries/**',
+            target: 'https://restcountries.com',
             secure: false,
             changeOrigin: true,
-            log: true,
+            logLevel: 'debug',
             pathRewrite: {
-                '^/countries': '',
+                '^/countries': '/v2/all?fields=name',
             },
-            // agent: new HttpsProxyAgent(proxyServer)
-        }),
+        })
     );
 };

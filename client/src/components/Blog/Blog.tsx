@@ -1,10 +1,9 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import './Blog.scss';
 
-import { getConfigRoutesBlog } from 'config';
 import { BlogSidebar } from './Sidebar';
 import { AuthGuard } from 'shared/guards/AuthGuard'
 import AddForm  from './add/Add';
@@ -23,15 +22,15 @@ interface Props {
 const BlogComponent = (props: Props) => {
   const renderContent = () => {
     return (
-      <Switch>
-          <Route path={getConfigRoutesBlog('dashboard')} exact component={Dashboard} />
-          <Route path={getConfigRoutesBlog('authors')} component={Authors} />
-          <AuthGuard path={getConfigRoutesBlog('addNew')} component={AddForm} app="blog" />
-          <Route path={getConfigRoutesBlog('updateBlog')()} component={Update} />
-          <Route path={getConfigRoutesBlog('sites')} component={Sites} />
-          <Route path={getConfigRoutesBlog('profile')} component={Account} />
-          <Route path={getConfigRoutesBlog('detail')()} component={Entry} />
-      </Switch>
+      <Routes>
+          <Route index element={<Dashboard />} />
+          <Route path="authors" element={<Authors />} />
+          <Route path="add" element={<AuthGuard component={AddForm} app="blog" />} />
+          <Route path="edit/:id" element={<Update />} />
+          <Route path="sites" element={<Sites />} />
+          <Route path="profile" element={<Account />} />
+          <Route path=":id" element={<Entry />} />
+      </Routes>
     )
   }
 

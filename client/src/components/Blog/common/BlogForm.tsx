@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 
 import './BlogForm.scss';
 import ButtonWidget from 'shared/components/widgets/button/button';
@@ -12,6 +11,7 @@ import { getConfigUrlSrvCountires } from 'config';
 import BlogService from 'shared/services/blog.service';
 import SelectMultipleWidget from 'shared/components/widgets/selectMult/selectMult';
 import InputWidget from 'shared/components/widgets/input/input';
+import { withRouter } from 'shared/router/withRouter';
 
 
 interface ComponentState {
@@ -20,11 +20,11 @@ interface ComponentState {
   countries: string[];
 }
 
-interface ReduxProps extends React.Props<any> {
+interface ReduxProps {
   notifySuccess: (msg: string) => void;
 }
 
-interface Props extends React.Props<any> {
+interface Props {
   initData: BlogFormData;
   history: any;
   match: any;
@@ -38,7 +38,7 @@ class BlogForm extends React.Component <ReduxProps & Props, ComponentState> {
     countries: [],
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: ReduxProps & Props) {
     if (prevProps.initData &&
       (prevProps.initData.elements !== this.props.initData.elements ||
         prevProps.initData.title !== this.props.initData.title ||
@@ -120,8 +120,19 @@ class BlogForm extends React.Component <ReduxProps & Props, ComponentState> {
     this.setState({title: value});
   }
 
-  onCountriesChange(value: string[]) {
-    this.setState({countries: value});
+  onCountriesChange(value: (string | number)[]) {
+    const countries = value.map(country => String(country));
+    const countriesChanged =
+      countries.length !== this.state.countries.length ||
+      countries.some((country, index) => country !== this.state.countries[index]);
+
+    if (countriesChanged) {
+      this.setState({countries});
+    }
+  }
+
+  handleCountriesChange = (countries: (string | number)[]) => {
+    this.onCountriesChange(countries);
   }
 
   onSubmit(event: any) {
@@ -180,10 +191,13 @@ class BlogForm extends React.Component <ReduxProps & Props, ComponentState> {
   }
 
   renderSettings() {
+    const titleInitialValue = this.props.initData ? this.props.initData.title : undefined;
+    const countriesInitialValue = this.props.initData ? this.props.initData.countries : undefined;
+
     return (
       <div className="blog-form__settings">
-        <InputWidget placeholder="Title" onChange={(value: string) => this.onTitleChange(value)} initialValue={this.state.title}/>
-        <SelectMultipleWidget placeholder="Pick region" onChange={(countries: any[]) => this.onCountriesChange(countries.map(country => country))} endpoint={getConfigUrlSrvCountires()} initialValue={this.state.countries}/>
+        <InputWidget placeholder="Title" onChange={(value: string) => this.onTitleChange(value)} initialValue={titleInitialValue}/>
+        <SelectMultipleWidget placeholder="Pick region" onChange={this.handleCountriesChange} endpoint={getConfigUrlSrvCountires()} initialValue={countriesInitialValue}/>
       </div>
     )
   }

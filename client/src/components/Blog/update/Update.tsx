@@ -5,7 +5,7 @@ import './Update.scss';
 import BlogForm from 'components/Blog/common/BlogForm';
 import BlogService from 'shared/services/blog.service';
 import { Blog, BlogFormData } from 'shared/interfaces/blog';
-import { withRouter } from 'react-router-dom';
+import { withRouter } from 'shared/router/withRouter';
 
 
 interface Props {
@@ -21,11 +21,11 @@ const initialState = {
 
 const UpdateForm = (props: Props) => {
   const [blogData, setBlogData] = useState<BlogFormData>(initialState)
+  const blogId = props.match.params.id;
 
   useEffect(() => {
-    const { id } = props.match.params;
-    getBlog(id);
-  }, [props.match.params])
+    getBlog(blogId);
+  }, [blogId])
 
   const getBlog = (id: number) => {
     service.getBlog(id).then((response: Blog) => {

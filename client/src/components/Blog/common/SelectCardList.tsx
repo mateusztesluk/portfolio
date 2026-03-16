@@ -1,12 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import LinearProgress from '@mui/material/LinearProgress';
 
 import './SelectCardList.scss';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import ButtonWidget from 'shared/components/widgets/button/button';
 import SelectWidget from 'shared/components/widgets/select/select';
 
@@ -75,9 +75,18 @@ class SelectCardList extends React.Component<Props, State> {
   }
 
   mapSubjects(subjects: any, selector: string | undefined) {
-    return subjects.map(
-      (subject: Subject | string, index: number) => ({id: (subject as Subject).id || index, name: selector ? subject[selector] : subject})
-    );
+    return (subjects || [])
+      .filter((subject: Subject | string | undefined | null) => subject !== undefined && subject !== null)
+      .map((subject: Subject | string, index: number) => {
+        if (typeof subject === 'string') {
+          return {id: index, name: subject};
+        }
+
+        return {
+          id: subject.id ?? index,
+          name: selector ? (subject as any)[selector] : (subject as any).name
+        };
+      });
   }
 
   getBlogs(subject: Subject) {

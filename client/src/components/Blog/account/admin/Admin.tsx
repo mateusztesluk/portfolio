@@ -3,18 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { Blog } from 'shared/interfaces/blog';
 import BlogService from 'shared/services/blog.service';
 
-
-interface ComponentState {
-  blogs: Blog[];
-}
-
 interface Props {
 
 }
 
 const _service: BlogService = new BlogService();
 
-const Admin = (props: Props) => {
+const Admin = (_props: Props) => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
 
   useEffect(() => {

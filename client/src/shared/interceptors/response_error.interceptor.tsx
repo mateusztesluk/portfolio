@@ -1,13 +1,10 @@
-import { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
+import { AxiosResponse, AxiosError } from 'axios';
 import axios from 'configAxios';
 import { getConfigBlog, getConfigUrlSrvAuth } from "config";
 
-interface AxiosErrorEx extends AxiosRequestConfig {
-  _retry: boolean
-}
-
-interface AxiosErrorExte extends AxiosError {
-  config: AxiosErrorEx
+interface ErrorResponseData {
+  message?: string;
+  non_field_errors?: string[];
 }
 
 class ErrorResponseInterceptor {
@@ -20,10 +17,17 @@ class ErrorResponseInterceptor {
   initInterceptor(notifyError: (msg: string) => void, setToken: (token: string) => void) {
     axios.interceptors.response.use((config: AxiosResponse) => {
       return config;
-    }, (error: AxiosErrorExte) => {
+    }, (error: AxiosError<ErrorResponseData>) => {
       return new Promise((resolve, reject) => {
-        if (error && error.response?.status === 401 && error.config && !error.config._retry ) {
-          const originalReq = error.config;
+        const retryableError = error as AxiosError<ErrorResponseData> & {
+          config?: {
+            _retry?: boolean;
+            headers: { set: (name: string, value: string) => void };
+          };
+        };
+
+        if (retryableError && retryableError.response?.status === 401 && retryableError.config && !retryableError.config._retry ) {
+          const originalReq = retryableError.config;
           originalReq._retry = true;
 
           let res = fetch(getConfigUrlSrvAuth('refreshLogin'), {
@@ -41,8 +45,8 @@ class ErrorResponseInterceptor {
               }),
           }).then(res => res.json()).then(res => {
               setToken(res.access)
-              originalReq.headers['Bearer'] = res.access;
-              return axios(originalReq);
+              originalReq.headers.set('Authorization', `Bearer ${res.access}`);
+              return axios(originalReq as any);
           }).catch(err => {
             notifyError('Please login again!');
           });
@@ -51,7 +55,7 @@ class ErrorResponseInterceptor {
         } else {
           const status = error.response?.status || 0;
           let msg = this.staticMessages[status];
-          const data = error.response?.data;
+          const data = error.response?.data || {};
           msg = msg || data.message || (data.non_field_errors && data.non_field_errors[0]) || this.staticMessages['0'];
           console.log('[ERROR]', msg);
           if (msg.length) {

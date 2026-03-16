@@ -5,9 +5,30 @@
 
 .form-field {
     width: 100%;
+    margin-bottom: 1.6rem;
 }
 
 input {
     width: 100%;
     font-size: inherit;
+}
+
+.section-shell {
+    width: min(100%, var(--content-width));
+    margin: 0 auto;
+}
+
+.surface-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-accent-strong);
 }

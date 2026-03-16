@@ -1,4 +1,21 @@
 .blog-form {
+    width: min(100%, 94rem);
+    margin: 0 auto;
+    padding: 3.2rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-soft);
+
+    @media screen and (max-width: 900px) {
+        padding: 2rem 1.6rem;
+        border-radius: var(--radius-md);
+    }
+
+    &__form {
+        display: grid;
+        gap: 2rem;
+    }
 
     &__paragraph {
         width: 100%;
@@ -6,11 +23,16 @@
     }
 
     &__settings {
-        margin-bottom: 1.5rem;
+        display: grid;
+        gap: 1.4rem;
+        margin-bottom: 0.5rem;
     }
 
     &__tool-action {
-        margin: 1.5rem 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin: 1.6rem 0 0;
         padding: 0;
     }
 
@@ -19,10 +41,39 @@
     }
 
     &__textarea {
+        min-height: 18rem;
+        padding: 2rem;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background: rgba(255, 255, 255, 0.74);
+        color: var(--color-heading);
+        font-size: 1.8rem;
+        line-height: 1.8;
         resize: vertical;
+
+        &::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        &:focus {
+            border-color: rgba(200, 109, 59, 0.55);
+            box-shadow:
+                0 0 0 0.35rem rgba(200, 109, 59, 0.12),
+                0 1rem 2.5rem rgba(17, 35, 43, 0.08);
+        }
     }
 
     &__submit {
         font-size: 2rem;
+    }
+
+    &__part-form {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(33, 50, 58, 0.08);
+    }
+
+    &__part-form:last-of-type {
+        border-bottom: 0;
+        padding-bottom: 0;
     }
 }

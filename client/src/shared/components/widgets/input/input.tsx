@@ -13,30 +13,29 @@ interface Props {
   initialValue?: string;
 }
 
-const InputWidget = (props: Props) => {
+const InputWidget = ({ id, onChange: onValueChange, refe, name, placeholder, type, initialValue }: Props) => {
   const [state, setstate] = useState('');
 
   const onChange = (value: string) => {
-    if (props.onChange) props.onChange(value);
+    if (onValueChange) onValueChange(value);
     setstate(value);
   }
 
   useEffect(() => {
-    if (props.initialValue && props.onChange) {
-      setstate(props.initialValue);
-      props.onChange(props.initialValue);
+    if (typeof initialValue === 'string') {
+      setstate(initialValue);
     }
-  }, [props.initialValue])
+  }, [initialValue])
 
 
   return (
     <input
-      id={props.id}
+      id={id}
       className="widget-input"
-      type={props.type || 'text'}
-      placeholder={props.placeholder}
-      name={props.name || 'input'}
-      ref={props.refe}
+      type={type || 'text'}
+      placeholder={placeholder}
+      name={name || 'input'}
+      ref={refe}
       onChange={e => onChange(e.target.value)}
       value={state}
     />

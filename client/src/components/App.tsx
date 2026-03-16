@@ -1,7 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { connect } from 'react-redux';
-import NotificationSystem from 'react-notification-system';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 import './App.scss';
 
@@ -20,7 +21,7 @@ import HttpService from 'shared/services/HttpService';
 import Interceptor from 'shared/interceptors/interceptor';
 
 
-interface State {
+interface ReduxState {
   notify: Notification;
 }
 
@@ -31,17 +32,16 @@ interface Props {
   setUserData: (data: User) => void;
 }
 
-class App extends React.Component <Props, State> {
+interface ComponentState {
+  notificationOpen: boolean;
+}
+
+class App extends React.Component <Props, ComponentState> {
   private _httpService: HttpService = new HttpService();
   private _interceptor: Interceptor = new Interceptor();
-  private _notificationSystem = React.createRef();
-  private _notificationStyle = {
-    NotificationItem: {
-      DefaultStyle: {
-        fontSize: '2rem',
-      },
-    }
-  }
+  state = {
+    notificationOpen: false,
+  };
 
   constructor(props: Props) {
     super(props);
@@ -51,10 +51,10 @@ class App extends React.Component <Props, State> {
     if (token) this.getUserData();
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State, snapshot: any) {
+  componentDidUpdate(prevProps: Props) {
     const notification = this.props.notify;
-    if (prevProps.notify !== notification) {
-      this.addNotification(notification.msg, notification.type);
+    if (prevProps.notify !== notification && notification?.msg) {
+      this.setState({ notificationOpen: true });
     }
   }
 
@@ -64,39 +64,60 @@ class App extends React.Component <Props, State> {
     }).catch(err => {});
   }
 
-  addNotification = (msg: string, level: string) => {
-    const notification: any = this._notificationSystem.current;
-    notification.addNotification({
-      message: msg,
-      level: level
-    });
+  handleNotificationClose = () => {
+    this.setState({ notificationOpen: false });
   };
 
   renderRouter() {
     return (
       <Router>
-        <Switch>
-          <Route path="/" exact component={Dashboard} />
-          <Route path="/blog" component={Blog} />
-          <Route path="/photos" component={Photos} />
-          <Route path="*" component={NotFound} />
-        </Switch>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/blog/*" element={<Blog />} />
+          <Route path="/photos" element={<Photos />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </Router>
     );
   }
 
   render() {
+    const severity = ['error', 'warning', 'info', 'success'].includes(this.props.notify?.type)
+      ? this.props.notify.type as 'error' | 'warning' | 'info' | 'success'
+      : 'info';
+
     return (
       <>
         {this.renderRouter()}
-        <NotificationSystem ref={this._notificationSystem} style={this._notificationStyle}/>
+        <Snackbar
+          open={this.state.notificationOpen}
+          autoHideDuration={4000}
+          onClose={this.handleNotificationClose}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          sx={{ top: '2.4rem !important', right: '2.4rem !important' }}
+        >
+          <Alert
+            onClose={this.handleNotificationClose}
+            severity={severity}
+            variant="filled"
+            sx={{
+              width: '100%',
+              minWidth: '28rem',
+              borderRadius: '18px',
+              boxShadow: '0 18px 40px rgba(17,35,43,0.18)',
+              alignItems: 'center'
+            }}
+          >
+            {this.props.notify?.msg}
+          </Alert>
+        </Snackbar>
         <LoginDialog />
       </>
     );
   }
 }
 
-const mapStateToProps = (state: State) => {
+const mapStateToProps = (state: ReduxState) => {
   return {
       notify: state.notify,
   };

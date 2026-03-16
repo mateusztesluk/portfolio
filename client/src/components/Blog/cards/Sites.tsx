@@ -1,37 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 
 import { getConfigUrlSrvBlog } from 'config';
 import SelectCardList from 'components/Blog/common/SelectCardList';
 
+const SitesComponent = () => {
+  const location = useLocation();
+  const sites = (location.state as { countries?: string[] } | null)?.countries;
 
-interface State {
-
-}
-
-interface Props {
-  location: any;
+  return (
+    <SelectCardList endpoint={getConfigUrlSrvBlog('countries')} filters={{ countries: null }} initData={sites}></SelectCardList>
+  );
 };
 
-class Sites extends React.Component<Props, State> {
-  endpoint: string = getConfigUrlSrvBlog('countries');
-  filters = {country: null};
-  state = {
-    sites: []
-  }
-
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      sites: this.props.location.state?.countries || null,
-    }
-  }
-
-  render() {
-    return (
-      <SelectCardList endpoint={this.endpoint} filters={this.filters}  initData={this.state.sites}></SelectCardList>
-    );
-  }
-};
-
-export default connect()(Sites);
+export default connect()(SitesComponent);

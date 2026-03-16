@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { notifyError } from 'actions/notify';
@@ -11,25 +11,22 @@ interface State {
 }
 
 interface Props {
-  children: any;
+  component: React.ComponentType<any>;
   user: User;
   app: string;
   notifyError: (msg: string) => void;
 }
 
-const Guard = ({ component: Component, user, app, notifyError, ...rest }) => {
-  const redirectWrongLogin = () => {
-    notifyError('Please sign in to have full access!');
-    return <Redirect to={{
-      pathname: `/${app}`,
-    }} />
-  };
+const Guard = ({ component: Component, user, app, notifyError, ...rest }: Props) => {
+  React.useEffect(() => {
+    if (!user?.username) {
+      notifyError('Please sign in to have full access!');
+    }
+  }, [notifyError, user]);
 
-  return <Route {...rest} render={(props) => (
-    user?.username
-    ? <Component {...props} />
-    : redirectWrongLogin()
-  )} />
+  return user?.username
+    ? <Component {...rest} />
+    : <Navigate to={`/${app}`} replace />;
 }
 
 

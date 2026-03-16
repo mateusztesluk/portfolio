@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useForm } from "react-hook-form";
 import { connect } from 'react-redux';
 
 import './RegisterForm.scss';
@@ -35,10 +34,36 @@ interface Account {
 export const RegisterFormComponent = (props: Props) => {
   const _httpService: HttpService = new HttpService();
   const [validationError, setValidationError] = useState<{valid: boolean, msg: string}>({valid: true, msg: "Passwords must be the same"});
-  // eslint-disable-next-line
-  const {register, setValue, handleSubmit, errors} = useForm<Account>();
+  const [formData, setFormData] = useState<Account>({
+    username: '',
+    password: '',
+    passwordConfirmation: '',
+    email: '',
+  });
 
-  const onSubmit = handleSubmit((data: Account) => {
+  const onFieldChange = (key: keyof Account, value: string) => {
+    setFormData({
+      ...formData,
+      [key]: value,
+    });
+  };
+
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data: Account = { ...formData };
+
+    if (!data.username || (props.registerType === RegisterFormType.FULL && (!data.password || !data.passwordConfirmation || !data.email))) {
+      setValidationError({
+        valid: false,
+        msg: 'Please fill all required fields',
+      });
+      setTimeout(() => setValidationError({
+        valid: true,
+        msg: "Passwords must be the same",
+      }), 4000);
+      return;
+    }
+
     if (data.password !== data.passwordConfirmation) {
       setValidationError({
         ...validationError,
@@ -50,33 +75,33 @@ export const RegisterFormComponent = (props: Props) => {
       }), 4000)
     } else {
       delete data.passwordConfirmation;
-      data = {...data, profile: {facebook_id: props.user.profile?.facebook_id}};
+      const payload: Account = {...data, profile: {facebook_id: props.user.profile?.facebook_id}};
       const url = getConfigUrlSrvAuth('register');
-      _httpService.post(url, data).then(reponse => {
+      _httpService.post(url, payload).then(reponse => {
         props.setRegistration(RegisterFormType.NONE);
         props.notifySuccess('Register successfully! Login again to authenticate yourself')
       }).catch(err => {
 
       })
     }
-  });
+  };
 
   const renderAdditionalFields = () => {
     return (
       <div className="register-form__additional-fields">
         <div className="form-field">
-          <InputWidget type="password" placeholder="Password" name="password" refe={register({required: true})}/>
+          <InputWidget type="password" placeholder="Password" name="password" onChange={(value: string) => onFieldChange('password', value)}/>
         </div>
-        <ErrorWidget text={errors.password ? "Password is required!" : ""}/>
+        <ErrorWidget text={!formData.password ? "Password is required!" : ""}/>
         <div className="form-field">
-          <InputWidget type="password" placeholder="Password Confirmation" name="passwordConfirmation" refe={register({required: true})}/>
+          <InputWidget type="password" placeholder="Password Confirmation" name="passwordConfirmation" onChange={(value: string) => onFieldChange('passwordConfirmation', value)}/>
         </div>
-        <ErrorWidget text={errors.passwordConfirmation ? "Password confirmation is required!" : ""}/>
+        <ErrorWidget text={!formData.passwordConfirmation ? "Password confirmation is required!" : ""}/>
         <ErrorWidget text={validationError.valid ? "" : validationError.msg}/>
         <div className="form-field">
-          <InputWidget type="email" placeholder="Email" name="email" refe={register({required: true})}/>
+          <InputWidget type="email" placeholder="Email" name="email" onChange={(value: string) => onFieldChange('email', value)}/>
         </div>
-        <ErrorWidget text={errors.email ? "Email is required!" : ""}/>
+        <ErrorWidget text={!formData.email ? "Email is required!" : ""}/>
       </div>
     )
   }
@@ -85,9 +110,9 @@ export const RegisterFormComponent = (props: Props) => {
     return (
       <div className="register-form__basic-fields">
         <div className="form-field">
-          <InputWidget placeholder="Username" name="username" refe={register({required: true})}/>
+          <InputWidget placeholder="Username" name="username" onChange={(value: string) => onFieldChange('username', value)}/>
         </div>
-        <ErrorWidget text={errors.username ? "Username is required!" : ""}/>
+        <ErrorWidget text={!formData.username ? "Username is required!" : ""}/>
       </div>
     )
   }

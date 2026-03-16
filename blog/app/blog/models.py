@@ -13,8 +13,8 @@ class Blog(db.Model):
     views = db.Column(db.Integer, default=0)
     countries = db.Column(db.Text)
     is_active = db.Column(db.Boolean(), default=True)
-    add_date = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    update_date = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    add_date = db.Column(db.DateTime(timezone=True), server_default=db.text('CURRENT_TIMESTAMP'))
+    update_date = db.Column(db.DateTime(timezone=True), onupdate=func.current_timestamp())
 
     def __str__(self):
         return "{} {} {} {}".format(self.id, self.country, self.content[:5], self.user_id)

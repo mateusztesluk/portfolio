@@ -8,11 +8,11 @@ const config = {
             login: 'token_auth/',
             refreshLogin: 'token_auth/refresh/',
             me: 'users/me/',
-            exists_fb: 'users/exist_fb_account/',
             register: 'users/',
             users: 'users/'
         },
         blog: {
+            base: '',
             authors: 'authors/',
             countries: 'countries/'
         },

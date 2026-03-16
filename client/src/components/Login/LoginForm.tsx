@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import { connect } from 'react-redux';
-import { Facebook } from './Facebook';
 
 import './LoginForm.scss';
 import InputWidget from 'shared/components/widgets/input/input';
@@ -19,9 +18,6 @@ interface Props {
   handleClose: (logged: boolean) => void;
   notifySuccess: (msg: string) => void;
   setRegistration: (type: number) => void;
-}
-
-interface State {
 }
 
 interface Credentials {
@@ -76,7 +72,6 @@ export const LoginFormComponent = (props: Props) => {
 
   return (
     <div className="login">
-      <Facebook fbCssClass="login__fb-btn" handleClose={props.handleClose} setRegistration={props.setRegistration}/>
       <form className="login__form" onSubmit={(e) => handleSubmit(e)}>
         <div className="form-field">
           <InputWidget placeholder="Username" onChange={(value: string) => onUsernameChange(value)}/>

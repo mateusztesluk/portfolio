@@ -1,25 +1,29 @@
 @keyframes showTextPartial {
-    0% {content: "Com"; color: rgb(243, 60, 60);}
-    25% {content: "Commi"; color: rgb(165, 55, 55);}
-    50% {content: "Comming"; color: rgb(49, 128, 25);}
-    100% {content: "Comming soon"; color: rgb(25, 47, 117);}
+    0% {content: "Pho";}
+    25% {content: "Photo";}
+    50% {content: "Photos";}
+    100% {content: "Photos soon";}
   }
 
 .photos {
     position: relative;
     width: 100vw;
-    height: 100vh;
-    background: linear-gradient(#fff, rgb(231, 76, 223));
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top, rgba(200, 109, 59, 0.18), transparent 30%),
+        linear-gradient(180deg, #f7f1e7 0%, #efe3d1 100%);
 
     &:after {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 15rem;
+        font-size: clamp(4rem, 10vw, 12rem);
+        font-family: Georgia, 'Times New Roman', serif;
+        letter-spacing: 0.04em;
         content: "";
         display: block;
-        color: red;
+        color: var(--color-heading);
         text-align: center;
         animation: showTextPartial 2s linear infinite;
     }

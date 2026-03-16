@@ -13,3 +13,22 @@
     background-repeat: no-repeat;
     background-size: cover;
 }
+
+@mixin card-surface {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(1.2rem);
+}
+
+@mixin section-shell {
+    width: min(100%, var(--content-width));
+    margin: 0 auto;
+}
+
+@mixin editorial-heading {
+    color: var(--color-heading);
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+}
