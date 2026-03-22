@@ -1,7 +1,7 @@
 import os
-import ftplib
 from typing import Union
 
+import requests
 from werkzeug.utils import secure_filename
 from flask import current_app
 from sqlalchemy import func
@@ -19,32 +19,64 @@ class BlogService:
     """
 
     def upload_files(self, files, prefix_filename=None):
+        """
+        Wysyła pliki do file-api (POST /files). W bazie zapisuje wyłącznie UUID; URL do img buduje frontend.
+        prefix_filename jest ignorowany (unikalność zapewnia UUID po stronie file-api).
+        """
         filenames = []
         valid_files = [file for file in files if getattr(file, 'filename', '')]
         if not valid_files:
             return filenames
 
-        ftp_host = os.environ.get('FTP_HOST', '')
-        ftp_username = os.environ.get('FTP_USERNAME', '')
-        ftp_password = os.environ.get('FTP_PASSWORD', '')
-        file_server_name = os.environ.get('FILE_SERVER_NAME', '')
+        upload_base = os.environ.get('FILE_API_UPLOAD_URL', '').strip()
+        if not upload_base:
+            raise BadRequest(
+                'Image upload requires FILE_API_UPLOAD_URL'
+            )
 
-        if not ftp_host or not ftp_username or not ftp_password or not file_server_name:
-            raise BadRequest('Image upload requires FTP_HOST, FTP_USERNAME, FTP_PASSWORD and FILE_SERVER_NAME to be configured')
+        timeout = float(os.environ.get('FILE_API_TIMEOUT_SECONDS', '60'))
+        upload_root = upload_base.rstrip('/')
+        post_url = f'{upload_root}/files'
 
-        with ftplib.FTP(ftp_host, ftp_username, ftp_password) as ftp:
-            for i, file in enumerate(valid_files):
-                filename = file.filename
-                filename_ext = self._get_filename_extension(filename)
-                if self._allowed_file(filename, filename_ext):
-                    filename = '{}_{}.{}'.format(prefix_filename, i, filename_ext) if prefix_filename else filename
-                    filename = secure_filename(filename)
-                    ftp.storbinary('STOR ' + filename, file)
-                    file_url = os.path.join(file_server_name, filename)
-                    filenames.append(file_url)
-                else:
-                    raise FileExtensionNotAllowed
+        for file in valid_files:
+            filename = file.filename
+            filename_ext = self._get_filename_extension(filename)
+            if not self._allowed_file(filename, filename_ext):
+                raise FileExtensionNotAllowed
+            secure_name = secure_filename(filename)
+            file.stream.seek(0)
+            content_type = file.content_type or self._guess_content_type(filename_ext)
+            try:
+                resp = requests.post(
+                    post_url,
+                    files={'file': (secure_name, file.stream, content_type)},
+                    timeout=timeout,
+                )
+            except requests.RequestException as exc:
+                raise BadRequest(f'file-api upload failed: {exc}') from exc
+            if resp.status_code not in (200, 201):
+                raise BadRequest(
+                    f'file-api returned {resp.status_code}: {resp.text[:500]}'
+                )
+            try:
+                payload = resp.json()
+                file_id = payload['id']
+            except (ValueError, KeyError) as exc:
+                raise BadRequest('file-api response is not valid JSON with an "id" field') from exc
+            filenames.append(file_id)
         return filenames
+
+    def _guess_content_type(self, filename_ext: str) -> str:
+        ext = filename_ext.lower()
+        mapping = {
+            'png': 'image/png',
+            'jpg': 'image/jpeg',
+            'jpeg': 'image/jpeg',
+            'gif': 'image/gif',
+            'pdf': 'application/pdf',
+            'txt': 'text/plain',
+        }
+        return mapping.get(ext, 'application/octet-stream')
 
     def _allowed_file(self, filename, filename_ext):
         return filename_ext in current_app.config['ALLOWED_EXTENSIONS']

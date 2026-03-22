@@ -9,6 +9,7 @@ import { notifySuccess } from 'actions/notify';
 import { Blog, Element, ElementType, BlogFormData } from 'shared/interfaces/blog';
 import { getConfigUrlSrvCountires } from 'config';
 import BlogService from 'shared/services/blog.service';
+import FileService from 'shared/services/file.service';
 import SelectMultipleWidget from 'shared/components/widgets/selectMult/selectMult';
 import InputWidget from 'shared/components/widgets/input/input';
 import { withRouter } from 'shared/router/withRouter';
@@ -32,6 +33,7 @@ interface Props {
 
 class BlogForm extends React.Component <ReduxProps & Props, ComponentState> {
   _service: BlogService = new BlogService();
+  _fileService: FileService = new FileService();
   state = {
     elements: [{value: '', type: ElementType.PARAGRAPH}],
     title: '',
@@ -146,8 +148,12 @@ class BlogForm extends React.Component <ReduxProps & Props, ComponentState> {
   }
 
   renderSelectImage(file: File | string, i: number) {
+    const initialValue =
+      typeof file === 'string' && file
+        ? this._fileService.resolveBlogImageUrl(file)
+        : null;
     return (
-      <SelectFileWidget name="blog-image" onChange={(file) => this.onFileChange(file, i)} orderNumber={i} initialValue={file ? file as string : null}/>
+      <SelectFileWidget name="blog-image" onChange={(f) => this.onFileChange(f, i)} orderNumber={i} initialValue={initialValue}/>
     )
   }
 

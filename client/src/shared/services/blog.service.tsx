@@ -1,10 +1,12 @@
 import { Element, ElementType, Blog, BlogFormData } from 'shared/interfaces/blog';
 import { getConfigUrlSrvBlog } from 'config';
 import HttpService from './HttpService';
+import FileService from './file.service';
 
 
 class BlogService {
   _httpService: HttpService = new HttpService();
+  _file: FileService = new FileService();
   seperator: string = '/{}/';
   separatorHelper: string = '//{()}\\';
   elementSeparator: string = '/{element}/';
@@ -23,7 +25,7 @@ class BlogService {
 
   unformatContent(contentStr: string, filenamesStr: string | null) {
     const content: Element[] = [];
-    const filenames = (filenamesStr && filenamesStr.split(',')) || [];
+    const uuids = (filenamesStr && filenamesStr.split(',')) || [];
 
     if (contentStr?.includes(this.elementSeparator)) {
       let imageIndex = 0;
@@ -39,10 +41,10 @@ class BlogService {
         }
 
         if (part === this.imagePrefix) {
-          const filename = filenames[imageIndex];
+          const uuid = uuids[imageIndex];
           imageIndex += 1;
-          if (filename) {
-            content.push({ value: filename, type: ElementType.IMAGE });
+          if (uuid) {
+            content.push({ value: uuid, type: ElementType.IMAGE });
           }
         }
       });
@@ -50,12 +52,12 @@ class BlogService {
       return content;
     }
 
-    filenames.forEach(filename => {
+    uuids.forEach(uuid => {
       contentStr = contentStr.replace(this.seperator, this.separatorHelper);
       const tmpContent = contentStr.split(this.separatorHelper);
       contentStr = tmpContent[1];
       if (tmpContent[0]) content.push({value: tmpContent[0], type: ElementType.PARAGRAPH});
-      content.push({value: filename, type: ElementType.IMAGE});
+      content.push({value: uuid, type: ElementType.IMAGE});
     });
     if (contentStr) content.push({value: contentStr, type: ElementType.PARAGRAPH});
     return content;
@@ -105,7 +107,9 @@ class BlogService {
     const images = rawData.elements.filter(el => el.type === ElementType.IMAGE);
     const existingImages = images
       .map(el => el.value)
-      .filter((value): value is string => typeof value === 'string');
+      .filter((value): value is string => typeof value === 'string')
+      .map((v) => this._file.toPhotoIdForApi(v))
+      .filter(Boolean);
     const newImages = images
       .map(el => el.value)
       .filter((value): value is File => value instanceof File);

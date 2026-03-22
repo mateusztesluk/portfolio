@@ -10,6 +10,7 @@ import { Blog, Element, ElementType } from 'shared/interfaces/blog';
 import { User } from 'shared/interfaces/user';
 import { notifySuccess } from 'actions/notify';
 import BlogService from 'shared/services/blog.service';
+import FileService from 'shared/services/file.service';
 import UserService from 'shared/services/user.service';
 import { withRouter } from 'shared/router/withRouter';
 
@@ -33,6 +34,7 @@ interface ReduxState {
 
 class Entry extends React.Component<Props, State> {
   _service: BlogService = new BlogService();
+  _file: FileService = new FileService();
   _userService: UserService = new UserService();
   state = {
     blog: {id: 0, content: '', user_id: 0, title: "", cooperators: null, photo_names: null, views: 0, countries: [], add_date: '', update_date: ''},
@@ -172,7 +174,12 @@ class Entry extends React.Component<Props, State> {
           {this.state.elements.map((elem: Element, id: number) => {
             return elem.type === ElementType.PARAGRAPH
               ? <div className="blog-detail__p" key={id}>{elem.value as string}</div>
-              : <img key={id} src={elem.value as string} alt={elem.value as string} className="blog-detail__image" />
+              : <img
+                  key={id}
+                  src={this._file.resolveBlogImageUrl(String(elem.value))}
+                  alt=""
+                  className="blog-detail__image"
+                />
           })}
         </div>
       </div>

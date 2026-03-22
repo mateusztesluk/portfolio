@@ -3,94 +3,24 @@ import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRound
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
+import { getPhotosAlbums } from '../../config';
+
 import './Photos.scss';
-
-interface PhotoItem {
-  id: string;
-  alt: string;
-  caption: string;
-  src: string;
-}
-
-interface Album {
-  id: string;
-  eyebrow: string;
-  title: string;
-  description: string;
-  location: string;
-  year: string;
-  photos: PhotoItem[];
-}
-
-const fileServerBase = 'http://localhost:8082';
-
-const createPhoto = (
-  id: string,
-  filename: string,
-  alt: string,
-  caption: string
-): PhotoItem => ({
-  id,
-  alt,
-  caption,
-  src: `${fileServerBase}/${filename}`
-});
-
-const albums: Album[] = [
-  {
-    id: 'andalusia-light',
-    eyebrow: 'Road album',
-    title: 'Andalusia light',
-    description: 'Golden evenings, dry hills and the quiet rhythm of southern streets collected as a calm summer diary.',
-    location: 'Spain',
-    year: '2026',
-    photos: [
-      createPhoto('andalusia-1', '/files/album1/1.jpg', 'Sunset over Andalusia hills', 'A late golden hour somewhere between white villages and dusty roads.'),
-      createPhoto('andalusia-2', '/files/BLOG_12_0.jpg', 'Warm valley in Spain', 'The kind of view that makes you stop the car for a minute longer than planned.'),
-      createPhoto('andalusia-3', '/files/BLOG_12_0.jpg', 'Editorial travel frame from Spain', 'A private note from a very bright afternoon and a very empty horizon.')
-    ]
-  },
-  {
-    id: 'northern-coast',
-    eyebrow: 'Sea notes',
-    title: 'Northern coast',
-    description: 'Wind, colder tones and long open space. A quieter album built around shoreline textures and weather.',
-    location: 'Baltic coast',
-    year: '2025',
-    photos: [
-      createPhoto('coast-1', '/files/BLOG_12_0.jpg', 'Coastal morning with pale sky', 'A washed-out horizon and the kind of silence only morning water gives.'),
-      createPhoto('coast-2', '/files/BLOG_12_0.jpg', 'Sea path and dunes', 'Collected from a walk with cold hands, a full camera roll and almost no people around.'),
-      createPhoto('coast-3', '/files/BLOG_12_0.jpg', 'Minimal sea landscape', 'Muted colors, simple geometry and the kind of frame that feels almost empty in the best way.')
-    ]
-  },
-  {
-    id: 'city-postcards',
-    eyebrow: 'Private city',
-    title: 'City postcards',
-    description: 'A softer urban album with evening windows, terraces and fragments of travel that feel half documentary, half memory.',
-    location: 'European cities',
-    year: '2024',
-    photos: [
-      createPhoto('city-1', '/files/BLOG_12_0.jpg', 'Evening city postcard', 'More about atmosphere than landmarks: terraces, facades and small pieces of a route.'),
-      createPhoto('city-2', '/files/BLOG_12_0.jpg', 'Quiet street at dusk', 'A frame kept mostly for the light bouncing from the walls just before blue hour.'),
-      createPhoto('city-3', '/files/BLOG_12_0.jpg', 'Urban travel composition', 'One of those private city frames that are impossible to explain and easy to remember.'),
-      createPhoto('city-4', '/files/BLOG_12_0.jpg', 'Night starting over the city', 'The transition between the last warm facade and the first darker shadow.')
-    ]
-  }
-];
 
 export const Photos = () => {
   const [activeAlbumId, setActiveAlbumId] = useState<string | null>(null);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
 
+  const albums = useMemo(() => getPhotosAlbums(), []);
+
   const activeAlbum = useMemo(
     () => albums.find((album) => album.id === activeAlbumId) || null,
-    [activeAlbumId]
+    [albums, activeAlbumId]
   );
 
   const totalPhotos = useMemo(
     () => albums.reduce((sum, album) => sum + album.photos.length, 0),
-    []
+    [albums]
   );
 
   const activePhoto = activeAlbum ? activeAlbum.photos[activePhotoIndex] : null;

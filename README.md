@@ -1,122 +1,37 @@
 # Portfolio
 
-My project to learn react and microservices on backend. It is still in progress.
-https://portfolio-mt.netlify.app/
+**Strona:** [http://31.3.218.11/](http://31.3.218.11/)
 
-Now:
-![alt text](http://mateusz.tesluk.pl/Portfolio.jpg)
+Projekt do nauki Reacta i mikroserwisów po stronie backendu.
 
-# ACCOUNT BACKEND TO AUTH
-[https://account-mt.herokuapp.com/](https://account-mt.herokuapp.com/)
-Python 3.8.3
+## Stack (Docker Compose)
 
-## Requirements
-```
-pip install -r requirements.txt
-```
+| Serwis | Rola | Język / runtime | Wersja (Dockerfile / moduł) | Krótko |
+|--------|------|-----------------|----------------------------|--------|
+| **client** | GUI (SPA + nginx) | TypeScript, React | Node 20 (build SPA), nginx 1.27 | Frontend portfolio; reverse proxy do API pod `/blogs`, `/account`, `/file-api`, `/monitor-api` |
+| **account** | Backend | Python, Django REST | Python 3.12, Django 4.2 | Autoryzacja, użytkownicy, JWT |
+| **blog** | Backend | Python, Flask | Python 3.12, Flask 3.0 | API bloga |
+| **file-api** | Backend | Scala, Play | Scala 3.3, JVM 21 | Serwis plików (S3 przez MinIO) |
+| **website-monitor** | Backend | Go | Go 1.23 | API monitorów / health-checków |
+| **portfolio-postgres** | Infra | PostgreSQL | 16 (Alpine) | Wspólna baza dla account, blog, monitor |
+| **minio** | Infra | MinIO | obraz `latest` | Object storage (pliki dla file-api) |
 
-## Dev Server
-```
-python manage.py runserver
-```
+Konfiguracja frontu w runtime: `client/public/config.js` (montowany do kontenera `client`).
 
-## Prod Server
-Dont forget about env variables and $PORT.
-What you need is in .env.cfg
-```
-docker build . -t account_img
-docker run -it --name account_img -d account_container
-```
-OR from docker hub
-```
-docker run -it --name mtesluk/account -d account_container
+### Uruchomienie całego stacku
+
+Z katalogu głównego repozytorium (wymagane pliki `account/.env.cfg`, `blog/.env.cfg`, `monitor/.env.cfg`, `file-api/.env.cfg`):
+
+```bash
+docker compose up --build
 ```
 
-## Deploy
-You must be logged in to heroku
-```
-heroku login
-./deploy.sh
-```
+Aplikacja pod **http://localhost** (port 80).
 
-## Tests
-```
-python manage.py test
-```
+### Pull obrazów i start (np. na serwerze)
 
-# BLOG BACKEND
-[https://portfolio-blog-mt.herokuapp.com/](https://portfolio-blog-mt.herokuapp.com/)
-Python 3.8.3
-
-## Requirements
-```
-pip install -r requirements.txt
-```
-
-## Dev Server
-```
-export FLASK_APP=run.py
-export FLASK_DEBUG=1
-flask run
-```
-
-## Prod Server
-Dont forget about env variables and $PORT.
-What you need is in .env.cfg
-```
-docker build . -t blog_img
-docker run -it --name blog_img -d blog_container
-```
-OR from docker hub
-```
-docker run -it --name mtesluk/blog -d blog_container
-```
-
-## Deploy
-You must be logged in to heroku
-```
-heroku login
-./deploy.sh
-```
-
-## Tests
-```
-python -m unittest discover
-```
-
-## Migrations
-To init migrations dir:
-```
-flask db init
-```
-To add new migraton:
-```
-flask db migrate -m "Initial migration."
-```
-To upgrade db with existing migrations:
-```
-flask db upgrade
+```bash
+docker compose pull && docker compose up -d
 ```
 
 
-
-
-# GUI
-App built in React with Typescript
-Node: 10.24.1
-Npm: 6.14.12
-
-## Install
-```
-npm install
-```
-
-## Run
-```
-npm run start
-```
-
-## Build
-```
-npm run build
-```

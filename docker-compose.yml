@@ -1,0 +1,123 @@
+# Portfolio — Postgres + MinIO + account + blog + monitor + file-api (Play/Scala) + frontend (nginx).
+# Uruchomienie: docker compose up --build
+# Front: http://localhost (port 80)
+#
+# Wymaga plików env: account/.env.cfg, blog/.env.cfg, monitor/.env.cfg, file-api/.env.cfg (jak w repozytorium).
+# Hostname bazy `portfolio-postgres` musi być zgodny z ACCOUNT_SQL_HOST / BLOG_SQL_URI / MONITOR_DB_HOST.
+#
+# Obrazy własne (pull na serwerze): każdy serwis z build ma też `image: mtesluk/portfolio-*:1.0`.
+# Lokalnie: docker compose build && docker compose push
+# Na VPS (bez źródeł): docker compose pull && docker compose up -d
+
+name: portfolio
+
+services:
+  portfolio-postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: portfolio_user
+      POSTGRES_PASSWORD: XXX
+      POSTGRES_DB: portfolio
+    volumes:
+      - portfolio_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio_user -d portfolio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - portfolio
+
+  minio:
+    image: quay.io/minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: XXX
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - portfolio
+
+  account:
+    image: mtesluk/portfolio-account:1.0
+    build: ./account
+    env_file:
+      - ./account/.env.cfg
+    environment:
+      PORT: "8001"
+    depends_on:
+      portfolio-postgres:
+        condition: service_healthy
+    expose:
+      - "8001"
+    networks:
+      - portfolio
+
+  blog:
+    image: mtesluk/portfolio-blog:1.0
+    build: ./blog
+    env_file:
+      - ./blog/.env.cfg
+    environment:
+      PORT: "8000"
+    depends_on:
+      portfolio-postgres:
+        condition: service_healthy
+      account:
+        condition: service_started
+    expose:
+      - "8000"
+    networks:
+      - portfolio
+
+  website-monitor:
+    image: mtesluk/portfolio-monitor:1.0
+    build: ./monitor
+    env_file:
+      - ./monitor/.env.cfg
+    depends_on:
+      portfolio-postgres:
+        condition: service_healthy
+    expose:
+      - "8085"
+    networks:
+      - portfolio
+
+  file-api:
+    image: mtesluk/portfolio-file-api:1.0
+    build: ./file-api
+    env_file:
+      - ./file-api/.env.cfg
+    expose:
+      - "8080"
+    depends_on:
+      - minio
+    networks:
+      - portfolio
+
+  client:
+    image: mtesluk/portfolio-client:1.0
+    build: ./client
+    volumes:
+      - ./client/public/config.js:/usr/share/nginx/html/config.js:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - account
+      - blog
+      - website-monitor
+      - file-api
+    networks:
+      - portfolio
+
+networks:
+  portfolio:
+    driver: bridge
+
+volumes:
+  portfolio_pgdata:
+  minio-data:
