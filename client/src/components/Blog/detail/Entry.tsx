@@ -52,19 +52,19 @@ class Entry extends React.Component<Props, State> {
           blog: response,
           elements: this._service.unformatContent(response.content, response.photo_names),
         });
-        this.getAuthorsNames();
+        this.getAuthorsNames(response);
       }
     }).catch(err => {});
   }
 
-  getAuthorsNames() {
-    this._userService.getUsers(this.state.blog.user_id).then((response: User[]) => {
+  getAuthorsNames(blog: Blog) {
+    this._userService.getUsers(blog.user_id).then((response: User[]) => {
       this.setState({
-        authors: {...this.state.authors, main: response[0]}
+        authors: {...this.state.authors, main: response[0] || { username: 'Anonym', id: -1 }}
       });
     });
 
-    const cooperators = this.state.blog.cooperators;
+    const cooperators = blog.cooperators;
     if (cooperators) {
       this._userService.getUsers(cooperators).then((response: User[]) => {
         this.setState({
@@ -146,7 +146,7 @@ class Entry extends React.Component<Props, State> {
                   authors: [this.state.authors.main]
                 }}
               >
-                {this.state.authors.main ? this.state.authors.main.username : 'Anonym'}
+                {this.state.authors.main?.username || 'Anonym'}
               </Link>
             </div>
             <div className="blog-detail__support">

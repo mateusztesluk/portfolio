@@ -1,30 +1,426 @@
-@keyframes showTextPartial {
-    0% {content: "Pho";}
-    25% {content: "Photo";}
-    50% {content: "Photos";}
-    100% {content: "Photos soon";}
-  }
+@import '../../styles/mixins.scss';
 
 .photos {
-    position: relative;
-    width: 100vw;
     min-height: 100vh;
+    padding: 4rem 2.4rem 6rem;
     background:
-        radial-gradient(circle at top, rgba(200, 109, 59, 0.18), transparent 30%),
+        radial-gradient(circle at top, rgba(200, 109, 59, 0.16), transparent 28%),
         linear-gradient(180deg, #f7f1e7 0%, #efe3d1 100%);
 
-    &:after {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: clamp(4rem, 10vw, 12rem);
+    &__hero {
+        margin-bottom: 3.2rem;
+    }
+
+    &__hero-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1.8fr) minmax(26rem, 0.9fr);
+        gap: 2.4rem;
+        padding: 3.2rem;
+    }
+
+    &__title,
+    &__section-title,
+    &__lightbox-title {
+        @include editorial-heading;
+        margin: 0;
         font-family: Georgia, 'Times New Roman', serif;
-        letter-spacing: 0.04em;
-        content: "";
-        display: block;
+    }
+
+    &__title {
+        margin-top: 1.4rem;
+        font-size: clamp(4.4rem, 6vw, 6.8rem);
+        max-width: 11ch;
+    }
+
+    &__lead,
+    &__section-copy,
+    &__album-description,
+    &__lightbox-caption {
+        color: var(--color-text-muted);
+        line-height: 1.8;
+        font-size: 1.7rem;
+    }
+
+    &__lead {
+        max-width: 62rem;
+        margin: 1.8rem 0 0;
+    }
+
+    &__hero-meta {
+        display: grid;
+        gap: 1.6rem;
+        align-content: end;
+    }
+
+    &__meta-card {
+        @include card-surface;
+        display: grid;
+        gap: 0.6rem;
+        padding: 2rem;
+        background: rgba(255, 250, 242, 0.76);
+    }
+
+    &__meta-label {
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+
+    &__meta-value {
         color: var(--color-heading);
-        text-align: center;
-        animation: showTextPartial 2s linear infinite;
+        font-size: 4.4rem;
+        line-height: 1;
+        font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    &__section-heading {
+        display: grid;
+        gap: 1.2rem;
+        margin-bottom: 2.4rem;
+    }
+
+    &__section-title {
+        font-size: clamp(3.2rem, 4vw, 4.6rem);
+        max-width: 13ch;
+    }
+
+    &__section-copy {
+        max-width: 60rem;
+        margin: 0;
+    }
+
+    &__grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
+        gap: 2.4rem;
+    }
+
+    &__album {
+        overflow: hidden;
+        transition: transform var(--transition-base), box-shadow var(--transition-base);
+
+        &:hover {
+            transform: translateY(-0.4rem);
+            box-shadow: var(--shadow-medium);
+        }
+    }
+
+    &__album--featured {
+        grid-column: span 2;
+
+        .photos__album-media {
+            min-height: 34rem;
+        }
+    }
+
+    &__album-button {
+        display: grid;
+        width: 100%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    &__album-media {
+        position: relative;
+        min-height: 28rem;
+        overflow: hidden;
+        border-bottom: 1px solid var(--color-border);
+        background: linear-gradient(180deg, rgba(17, 35, 43, 0.12), rgba(17, 35, 43, 0.02));
+    }
+
+    &__album-cover {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    &__album-badge {
+        position: absolute;
+        top: 1.6rem;
+        left: 1.6rem;
+        padding: 0.8rem 1.3rem;
+        border-radius: 999px;
+        background: rgba(255, 250, 242, 0.92);
+        color: var(--color-heading);
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+    }
+
+    &__album-stack {
+        position: absolute;
+        right: 1.8rem;
+        bottom: 1.8rem;
+        display: flex;
+        gap: 1rem;
+        pointer-events: none;
+    }
+
+    &__album-stack-image {
+        width: 7.2rem;
+        height: 7.2rem;
+        object-fit: cover;
+        border-radius: 1.6rem;
+        border: 2px solid rgba(255, 250, 242, 0.85);
+        box-shadow: 0 1.2rem 2.2rem rgba(17, 35, 43, 0.18);
+
+        &:nth-child(1) {
+            transform: rotate(-7deg);
+        }
+
+        &:nth-child(2) {
+            transform: rotate(7deg);
+        }
+    }
+
+    &__album-body {
+        display: grid;
+        gap: 1.4rem;
+        padding: 2.2rem;
+    }
+
+    &__album-title-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1.6rem;
+    }
+
+    &__album-title {
+        margin: 0;
+        color: var(--color-heading);
+        font-size: 3rem;
+        font-family: Georgia, 'Times New Roman', serif;
+        line-height: 1.06;
+    }
+
+    &__album-year,
+    &__album-location {
+        color: var(--color-text-muted);
+        font-size: 1.45rem;
+    }
+
+    &__album-description {
+        margin: 0;
+    }
+
+    &__album-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.6rem;
+        padding-top: 0.6rem;
+    }
+
+    &__album-cta {
+        color: var(--color-accent-strong);
+        font-size: 1.4rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+    }
+
+    &__lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 1200;
+        display: grid;
+        place-items: center;
+        padding: 2.4rem;
+        background: rgba(17, 35, 43, 0.56);
+        backdrop-filter: blur(1rem);
+    }
+
+    &__lightbox-shell {
+        position: relative;
+        width: min(112rem, 100%);
+        max-height: calc(100vh - 4.8rem);
+        padding: 2.4rem;
+        overflow: auto;
+    }
+
+    &__lightbox-close,
+    &__lightbox-nav,
+    &__thumb {
+        border: 0;
+        cursor: pointer;
+    }
+
+    &__lightbox-close {
+        position: absolute;
+        top: 1.6rem;
+        right: 1.6rem;
+        width: 4.4rem;
+        height: 4.4rem;
+        border-radius: 50%;
+        background: rgba(17, 35, 43, 0.08);
+        color: var(--color-heading);
+        font-size: 2.2rem;
+        transition: background var(--transition-base), transform var(--transition-base);
+
+        &:hover {
+            background: rgba(17, 35, 43, 0.14);
+            transform: rotate(90deg);
+        }
+    }
+
+    &__lightbox-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 2rem;
+        padding-right: 5.2rem;
+        margin-bottom: 2rem;
+    }
+
+    &__lightbox-title {
+        margin-top: 1rem;
+        font-size: clamp(3rem, 4vw, 4.4rem);
+    }
+
+    &__lightbox-counter {
+        color: var(--color-text-muted);
+        font-size: 1.7rem;
+        white-space: nowrap;
+    }
+
+    &__lightbox-stage {
+        position: relative;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 1.2rem;
+        align-items: center;
+    }
+
+    &__lightbox-nav {
+        width: 5rem;
+        height: 5rem;
+        border-radius: 50%;
+        background: rgba(17, 35, 43, 0.08);
+        color: var(--color-heading);
+        font-size: 2rem;
+        transition: background var(--transition-base), transform var(--transition-base);
+
+        &:hover {
+            background: rgba(17, 35, 43, 0.14);
+            transform: scale(1.04);
+        }
+    }
+
+    &__lightbox-image {
+        width: 100%;
+        max-height: 68vh;
+        object-fit: cover;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--color-border);
+        box-shadow: var(--shadow-soft);
+        background: rgba(255, 250, 242, 0.8);
+    }
+
+    &__lightbox-caption {
+        max-width: 78rem;
+        margin: 1.8rem 0 0;
+    }
+
+    &__lightbox-strip {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    &__thumb {
+        padding: 0.4rem;
+        border-radius: 1.8rem;
+        background: rgba(17, 35, 43, 0.05);
+        transition: transform var(--transition-base), background var(--transition-base);
+
+        &:hover {
+            transform: translateY(-0.2rem);
+            background: rgba(17, 35, 43, 0.1);
+        }
+    }
+
+    &__thumb--active {
+        background: rgba(200, 109, 59, 0.18);
+        box-shadow: inset 0 0 0 1px rgba(162, 79, 35, 0.2);
+    }
+
+    &__thumb-image {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 1.2rem;
+    }
+
+    @media screen and (max-width: 980px) {
+        &__hero-card,
+        &__lightbox-header {
+            grid-template-columns: 1fr;
+        }
+
+        &__hero-card {
+            gap: 2rem;
+        }
+
+        &__album--featured {
+            grid-column: span 1;
+        }
+
+        &__lightbox-header {
+            display: grid;
+            padding-right: 4.6rem;
+        }
+    }
+
+    @media screen and (max-width: 760px) {
+        padding: 3rem 1.6rem 4.8rem;
+
+        &__hero-card,
+        &__lightbox-shell {
+            padding: 2rem;
+        }
+
+        &__grid {
+            grid-template-columns: 1fr;
+        }
+
+        &__album-media {
+            min-height: 24rem;
+        }
+
+        &__lightbox {
+            padding: 1.2rem;
+        }
+
+        &__lightbox-shell {
+            max-height: calc(100vh - 2.4rem);
+        }
+
+        &__lightbox-stage {
+            grid-template-columns: 1fr;
+        }
+
+        &__lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2;
+        }
+
+        &__lightbox-nav--prev {
+            left: 1.6rem;
+        }
+
+        &__lightbox-nav--next {
+            right: 1.6rem;
+        }
     }
 }

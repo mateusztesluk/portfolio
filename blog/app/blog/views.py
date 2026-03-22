@@ -52,7 +52,7 @@ class BlogViewSet(views.MethodView):
             blog = service.create_blog(data)
             blog_id = blog['id']
             filenames = service.upload_files(images, f'BLOG_{blog_id}')
-            service.update_blog(blog_id, {'photo_names': ','.join(filenames)})
+            blog = service.update_blog(blog_id, {'photo_names': ','.join(filenames)})
             return jsonify(blog), 201
         except (TypeError, OperationalError, IntegrityError) as err:
             raise BadRequest(err.args)
@@ -73,11 +73,14 @@ class BlogViewSet(views.MethodView):
     def put(self, id, *args, **kwargs):
         data = request.get_json(silent=True) or request.form.to_dict()
         images = request.files.getlist('file')
+        existing_photo_names = data.pop('photo_names', '')
+        existing_photo_names = [name for name in existing_photo_names.split(',') if name]
         service = BlogService()
         blog = service.update_blog(id, data)
         blog_id = blog['id']
         filenames = service.upload_files(images, f'BLOG_{blog_id}')
-        service.update_blog(blog_id, {'photo_names': ','.join(filenames)})
+        all_photo_names = existing_photo_names + filenames
+        blog = service.update_blog(blog_id, {'photo_names': ','.join(all_photo_names)})
         return jsonify(blog)
 
 def authors():

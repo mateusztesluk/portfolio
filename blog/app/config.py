@@ -12,7 +12,7 @@ class Config(object):
     TESTING = False
     AUTH_SERVER = os.environ.get('AUTH_SERVER', '')
     ALLOWED_EXTENSIONS = ('txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif')
-    RATELIMIT_DEFAULT = '200 per day;10 per second'
+    RATELIMIT_DEFAULT = '2000 per day;100 per second'
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024     # 16 megabytes
     CORS_ORIGINS = os.environ.get('BLOG_ALLOWED_ORIGINS', '').split(' ')
     PUBLIC_AUTH_KEY = normalize_pem_env(os.environ.get('PUBLIC_AUTH_KEY', ''))

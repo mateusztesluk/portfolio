@@ -124,7 +124,7 @@ class PieChart extends React.Component<Props, State> {
       .text(d3.sum(data, (entry: DataBasic) => entry.value).toLocaleString());
 
     const legend = svg.append('g')
-      .attr('transform', `translate(${width * 0.70}, ${height * 0.29})`);
+      .attr('transform', `translate(${width * 0.60}, ${height * 0.29})`);
 
     const legendItems = legend.selectAll('g')
       .data(data)
@@ -134,6 +134,9 @@ class PieChart extends React.Component<Props, State> {
       .on('click', d => {
         this.openEntry(d as DataBasic);
       });
+
+    legendItems.append('title')
+      .text((d: DataBasic) => `${d.name}: ${d.value.toLocaleString()} views`);
 
     legendItems.append('circle')
       .attr('r', 9)
@@ -146,7 +149,7 @@ class PieChart extends React.Component<Props, State> {
       .attr('x', 24)
       .attr('font-size', 24)
       .attr('y', -4)
-      .text((d: DataBasic) => this.truncateLabel(d.name));
+      .text((d: DataBasic) => this.truncateLabel(d.name, width));
 
     legendItems.append('text')
       .attr('class', 'pie-chart__legend-value')
@@ -156,8 +159,15 @@ class PieChart extends React.Component<Props, State> {
       .text((d: DataBasic) => `${d.value.toLocaleString()} views`);
   }
 
-  truncateLabel(name: string) {
-    return name.length > 16 ? `${name.slice(0, 16)}...` : name;
+  truncateLabel(name: string, chartWidth: number) {
+    const legendWidth = chartWidth * 0.28;
+    const leftPadding = 32;
+    const fontSize = 24;
+    const averageCharWidth = fontSize * 0.58;
+    const availableWidth = Math.max(legendWidth - leftPadding, averageCharWidth * 9);
+    const maxChars = Math.max(9, Math.floor(availableWidth / averageCharWidth));
+
+    return name.length > maxChars ? `${name.slice(0, maxChars - 3).trimEnd()}...` : name;
   }
 
   render() {

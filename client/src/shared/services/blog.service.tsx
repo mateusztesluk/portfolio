@@ -7,14 +7,49 @@ class BlogService {
   _httpService: HttpService = new HttpService();
   seperator: string = '/{}/';
   separatorHelper: string = '//{()}\\';
+  elementSeparator: string = '/{element}/';
+  paragraphPrefix: string = 'paragraph:';
+  imagePrefix: string = 'image';
 
   formatContent(elements: Element[]) {
-    return elements.map((elem: Element) => (elem.type === 0 ? elem.value : this.seperator)).join('');
+    return elements
+      .map((elem: Element) => (
+        elem.type === ElementType.PARAGRAPH
+          ? `${this.paragraphPrefix}${encodeURIComponent(String(elem.value))}`
+          : this.imagePrefix
+      ))
+      .join(this.elementSeparator);
   }
 
   unformatContent(contentStr: string, filenamesStr: string | null) {
     const content: Element[] = [];
     const filenames = (filenamesStr && filenamesStr.split(',')) || [];
+
+    if (contentStr?.includes(this.elementSeparator)) {
+      let imageIndex = 0;
+
+      contentStr.split(this.elementSeparator).forEach((part) => {
+        if (part.startsWith(this.paragraphPrefix)) {
+          const paragraph = part.slice(this.paragraphPrefix.length);
+          content.push({
+            value: decodeURIComponent(paragraph),
+            type: ElementType.PARAGRAPH
+          });
+          return;
+        }
+
+        if (part === this.imagePrefix) {
+          const filename = filenames[imageIndex];
+          imageIndex += 1;
+          if (filename) {
+            content.push({ value: filename, type: ElementType.IMAGE });
+          }
+        }
+      });
+
+      return content;
+    }
+
     filenames.forEach(filename => {
       contentStr = contentStr.replace(this.seperator, this.separatorHelper);
       const tmpContent = contentStr.split(this.separatorHelper);
@@ -67,12 +102,21 @@ class BlogService {
 
   _formatBlogDataToSend(rawData: BlogFormData) {
     const data = new FormData();
-    const images = rawData.elements.filter(el => el.type === 1).map(el => el.value);
-    images.forEach(el => {
-      data.append('file', el)
-    })
+    const images = rawData.elements.filter(el => el.type === ElementType.IMAGE);
+    const existingImages = images
+      .map(el => el.value)
+      .filter((value): value is string => typeof value === 'string');
+    const newImages = images
+      .map(el => el.value)
+      .filter((value): value is File => value instanceof File);
+
+    newImages.forEach((image) => {
+      data.append('file', image);
+    });
+
     const formattedContent = this.formatContent(rawData.elements);
     data.set('content', formattedContent);
+    data.set('photo_names', existingImages.join(','));
     data.set('countries', rawData.countries.join(';'));
     data.set('title', rawData.title);
     return data;

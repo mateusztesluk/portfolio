@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework.serializers import ValidationError
 
-from account.serializers.user import UserSerializer
+from account.serializers.user import PublicUserSerializer, UserSerializer
 from account.models import Profile
 
 
@@ -71,7 +71,7 @@ class UserService:
         profile_filters = self._format_model_filters(profile_filters, 'profile') if profile_filters else {}
         queryset = User.objects.filter(**filters, **profile_filters)
         queryset = queryset.order_by(ordering) if ordering else queryset
-        serializer = UserSerializer(queryset, many=True)
+        serializer = PublicUserSerializer(queryset, many=True)
         return serializer.data
 
     def _format_model_filters(self, filters: dict, prefix: str = None):

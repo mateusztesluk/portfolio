@@ -16,6 +16,11 @@ const config = {
             authors: 'authors/',
             countries: 'countries/'
         },
+        monitor: {
+            base: 'monitors',
+            check: (id: number | null = null) =>
+                id ? `monitors/${id}/check` : `monitors/:id/check`,
+        },
         countries: {},
     },
     routes: {
@@ -28,7 +33,10 @@ const config = {
             profile: '/blog/profile',
             detail: detailRoute('/blog/'),
             updateBlog: detailRoute('/blog/edit/'),
-        }
+        },
+        monitor: {
+            dashboard: '/monitor',
+        },
     }
 }
 
@@ -50,10 +58,21 @@ export const getConfigUrlSrvCountires = (key?: string | null) => {
     return url + config.endpoints.countries[key]
 }
 
+export const getConfigUrlSrvMonitor = (key?: string | null, id?: number | null) => {
+    const url = window['appConfig']['monitor']['baseUrlSrv'];
+    if (!key) return url;
+    const endpoint = config.endpoints.monitor[key];
+    return typeof endpoint === 'function' ? url + endpoint(id || null) : url + endpoint;
+}
+
 export const getConfigBlog = (key: string) => {
     return window['appConfig']['blog'][key];
 }
 
 export const getConfigRoutesBlog = (key: string) => {
     return config.routes.blog[key];
+}
+
+export const getConfigRoutesMonitor = (key: string) => {
+    return config.routes.monitor[key];
 }

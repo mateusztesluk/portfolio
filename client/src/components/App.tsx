@@ -9,6 +9,7 @@ import './App.scss';
 import { Notification } from 'shared/interfaces/notification.interface';
 import { Blog } from './Blog/Blog';
 import { Dashboard } from './Dashboard/Dashboard';
+import { Monitor } from './Monitor/Monitor';
 import { Photos } from './Photos/Photos';
 import { NotFound } from 'shared/components/NotFound';
 import { LoginDialog } from './Login/LoginDialog';
@@ -74,6 +75,7 @@ class App extends React.Component <Props, ComponentState> {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/blog/*" element={<Blog />} />
+          <Route path="/monitor" element={<Monitor />} />
           <Route path="/photos" element={<Photos />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

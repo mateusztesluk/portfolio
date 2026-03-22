@@ -7,6 +7,9 @@ var appConfig = {
     account: {
         baseUrlSrv: '/account/'
     },
+    monitor: {
+        baseUrlSrv: '/monitor-api/'
+    },
     countries: {
         baseUrlSrv: '/countries'
     },

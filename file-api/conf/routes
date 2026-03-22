@@ -1,0 +1,5 @@
+### No CSRF (API)
++nocsrf
+POST    /files              controllers.FileController.upload()
+GET     /files/:id          controllers.FileController.download(id: String)
+DELETE  /files/:id          controllers.FileController.remove(id: String)
