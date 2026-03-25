@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
@@ -82,6 +83,13 @@ export const Photos = () => {
 
   return (
     <div className="photos">
+      <nav className="photos__top section-shell" aria-label="Page navigation">
+        <Link to="/" className="photos__back-link">
+          <ArrowBackIosNewRoundedIcon className="photos__back-icon" fontSize="inherit" />
+          Back to home
+        </Link>
+      </nav>
+
       <section className="photos__hero section-shell">
         <div className="photos__hero-card surface-card">
           <div className="photos__hero-copy">

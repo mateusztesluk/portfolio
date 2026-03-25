@@ -42,7 +42,7 @@
     }
 
     &--1 {
-      @include background-img-gradient(rgba(19, 41, 51, 0.62), rgba(200, 109, 59, 0.18), "../assets/blog-dashboard.png");
+      @include background-img-gradient(rgba(19, 41, 51, 0.62), rgba(200, 109, 59, 0.18), "../assets/blog.png");
     }
 
     &--2 {
@@ -50,7 +50,7 @@
     }
 
     &--3 {
-      @include background-img-gradient(rgba(19, 41, 51, 0.62), rgba(63, 111, 88, 0.16), "../assets/wcwm.png");
+      @include background-img-gradient(rgba(19, 41, 51, 0.62), rgba(63, 111, 88, 0.16), "../assets/monitor.png");
     }
 
     &--4 {
@@ -65,8 +65,9 @@
       font-size: 3.6rem;
       font-family: Georgia, 'Times New Roman', serif;
       letter-spacing: 0.04em;
-      color: #fff;
+      color: #fffaf2;
       text-transform: uppercase;
+      text-shadow: 0 0.2rem 1.6rem rgba(0, 0, 0, 0.45);
       position: absolute;
 
       @media screen and (max-width: 1000px) {
@@ -103,11 +104,12 @@
     }
 
     &__quarter {
-      transition: all .3s;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
       position: absolute;
       width: 19rem;
       height: 19rem;
-      backdrop-filter: blur(0.4rem);
+      backdrop-filter: blur(0.5rem) saturate(1.15);
+      border: 1px solid rgba(255, 250, 242, 0.14);
 
       @media screen and (max-width: 1000px) {
         width: 14rem;
@@ -121,14 +123,23 @@
 
       &:hover {
           cursor: pointer;
+          filter: brightness(1.06);
       }
 
+      // Blog: slate → brand orange (matches blog / primary CTAs)
       &--1 {
           bottom: 0;
           right: 0;
-          background: linear-gradient(135deg, rgba(255, 252, 247, 0.88), rgba(200, 109, 59, 0.84));
+          background: linear-gradient(
+            145deg,
+            rgba(17, 35, 43, 0.94) 0%,
+            rgba(28, 58, 70, 0.9) 38%,
+            rgba(200, 109, 59, 0.93) 100%
+          );
           border-radius: 17rem 0 0 0;
-          box-shadow: -1rem -1rem 3rem rgba(17, 35, 43, 0.24);
+          box-shadow:
+            -1rem -1rem 3rem rgba(17, 35, 43, 0.35),
+            inset 0 1px 0 rgba(255, 250, 242, 0.1);
 
           @media screen and (max-width: 1000px) {
             border-radius: 10rem 0 0 0;
@@ -140,15 +151,26 @@
 
           &:hover {
               transform: translate(-1.5rem, -1.5rem) scale(1.1);
+              box-shadow:
+                -1.2rem -1.2rem 3.6rem rgba(17, 35, 43, 0.4),
+                0 0 0 1px rgba(255, 250, 242, 0.18);
           }
       }
 
+      // Photos: slate → warm amber (travel / golden hour)
       &--2 {
           bottom: 0;
           left: 0;
-          background: linear-gradient(225deg, rgba(255, 252, 247, 0.88), rgba(200, 109, 59, 0.84));
+          background: linear-gradient(
+            215deg,
+            rgba(17, 35, 43, 0.94) 0%,
+            rgba(42, 32, 22, 0.88) 42%,
+            rgba(176, 118, 48, 0.92) 100%
+          );
           border-radius: 0 17rem 0 0;
-          box-shadow: 1rem -1rem 3rem rgba(17, 35, 43, 0.24);
+          box-shadow:
+            1rem -1rem 3rem rgba(17, 35, 43, 0.35),
+            inset 0 1px 0 rgba(255, 250, 242, 0.1);
 
           @media screen and (max-width: 1000px) {
             border-radius: 0 10rem 0 0;
@@ -160,15 +182,26 @@
 
           &:hover {
               transform: translate(1.5rem, -1.5rem) scale(1.1);
+              box-shadow:
+                1.2rem -1.2rem 3.6rem rgba(17, 35, 43, 0.4),
+                0 0 0 1px rgba(255, 250, 242, 0.18);
           }
       }
 
+      // Monitor: slate → sage green (matches monitor page accent)
       &--3 {
           top: 0;
           right: 0;
-          background: linear-gradient(45deg, rgba(255, 252, 247, 0.88), rgba(200, 109, 59, 0.84));
+          background: linear-gradient(
+            40deg,
+            rgba(17, 35, 43, 0.94) 0%,
+            rgba(24, 48, 40, 0.9) 40%,
+            rgba(63, 111, 88, 0.94) 100%
+          );
           border-radius: 0 0 0 17rem;
-          box-shadow: -1rem 1rem 3rem rgba(17, 35, 43, 0.24);
+          box-shadow:
+            -1rem 1rem 3rem rgba(17, 35, 43, 0.35),
+            inset 0 1px 0 rgba(255, 250, 242, 0.1);
 
           @media screen and (max-width: 1000px) {
             border-radius: 0 0 0 10rem;
@@ -180,15 +213,26 @@
 
           &:hover {
               transform: translate(-1.5rem, 1.5rem) scale(1.1);
+              box-shadow:
+                -1.2rem 1.2rem 3.6rem rgba(17, 35, 43, 0.4),
+                0 0 0 1px rgba(255, 250, 242, 0.18);
           }
       }
 
+      // COVID-19: slate → deep red (data / alert tone from covid tile)
       &--4 {
         top: 0;
         left: 0;
-        background: linear-gradient(320deg, rgba(255, 252, 247, 0.88), rgba(200, 109, 59, 0.84));
+        background: linear-gradient(
+          305deg,
+          rgba(17, 35, 43, 0.94) 0%,
+          rgba(58, 22, 26, 0.9) 38%,
+          rgba(158, 42, 48, 0.93) 100%
+        );
         border-radius: 0 0 17rem 0;
-        box-shadow: 1rem 1rem 3rem rgba(17, 35, 43, 0.24);
+        box-shadow:
+          1rem 1rem 3rem rgba(17, 35, 43, 0.35),
+          inset 0 1px 0 rgba(255, 250, 242, 0.1);
 
         @media screen and (max-width: 1000px) {
           border-radius: 0 0 10rem 0;
@@ -200,6 +244,9 @@
 
         &:hover {
             transform: translate(1.5rem, 1.5rem) scale(1.1);
+            box-shadow:
+              1.2rem 1.2rem 3.6rem rgba(17, 35, 43, 0.4),
+              0 0 0 1px rgba(255, 250, 242, 0.18);
         }
       }
     }
