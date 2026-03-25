@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 
 import './Monitor.scss';
 
@@ -111,6 +113,13 @@ export const Monitor = () => {
 
   return (
     <div className="monitor">
+      <nav className="monitor__top section-shell" aria-label="Page navigation">
+        <Link to="/" className="monitor__back-link">
+          <ArrowBackIosNewRoundedIcon className="monitor__back-icon" fontSize="inherit" />
+          Back to home
+        </Link>
+      </nav>
+
       <section className="monitor__hero section-shell">
         <div className="monitor__hero-card surface-card">
           <div className="monitor__intro">
