@@ -170,7 +170,7 @@ class Entry extends React.Component<Props, State> {
             {this.renderActions()}
           </div>
         </div>
-        <div className="blog-detail__content">
+        <article className="blog-detail__content">
           {this.state.elements.map((elem: Element, id: number) => {
             return elem.type === ElementType.PARAGRAPH
               ? <div className="blog-detail__p" key={id}>{elem.value as string}</div>
@@ -181,7 +181,7 @@ class Entry extends React.Component<Props, State> {
                   className="blog-detail__image"
                 />
           })}
-        </div>
+        </article>
       </div>
     );
   }
