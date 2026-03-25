@@ -29,11 +29,13 @@
     &__sidebar {
         position: sticky;
         top: 0;
+        align-self: flex-start;
         width: 32rem;
+        height: 100vh;
         min-height: 100vh;
+        max-height: 100vh;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         background:
             linear-gradient(180deg, rgba(16, 34, 42, 0.97), rgba(24, 53, 63, 0.96)),
             url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80');
@@ -70,7 +72,11 @@
     }
 
     &__top {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
         display: grid;
+        align-content: start;
         gap: 3rem;
         padding: 3rem 2.4rem 2rem;
     }
@@ -115,6 +121,7 @@
 
     &__navs {
         display: grid;
+        align-content: start;
         gap: 0.8rem;
 
         & > * {
@@ -143,8 +150,10 @@
     }
 
     &__bottom {
+        flex-shrink: 0;
         padding: 2rem 2.4rem 2.8rem;
         display: grid;
+        align-content: start;
         gap: 1.2rem;
 
         & > * {
